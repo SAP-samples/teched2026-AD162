@@ -1,11 +1,11 @@
 # Exercise 1 — From idea to a domain model
 
-**Goal:** turn the xstravels project brief into a CDS **domain model** with realistic **sample
+**Goal:** turn the xstravels project spec into a CDS **domain model** with realistic **sample
 data** — by directing Claude Code, not by hand-writing CDS.
 
 In Exercise 0 you installed the CAP skills and got the seed ready. The seed's
-[`readme.md`](../../xstravels/readme.md) already holds the agreed **project brief** — purpose,
-actors, core entities, lifecycle, and hard rules. That brief is the first artifact of the
+[`readme.md`](../../xstravels/readme.md) already holds the agreed **project spec** — purpose,
+actors, core entities, lifecycle, and hard rules. That spec is the first artifact of the
 `cap-guided-dev` flow (its "rough idea" stage). Here you pick up at the next stage: **the domain
 model**.
 
@@ -14,7 +14,7 @@ model**.
 👉 Open Claude Code in the `xstravels` folder and start the flow:
 
 ```text
-Let's build this CAP app with the cap-guided-dev skill. The project brief is in readme.md.
+Let's build this CAP app with the cap-guided-dev skill. The project spec is in readme.md.
 Start with the domain model.
 ```
 
@@ -23,10 +23,10 @@ Start with the domain model.
 - Activate **`cap-guided-dev`** and establish its documentation source — it should use the **CAP
   MCP server** (the `cap` tools) to ground every annotation and type in current CAP docs rather
   than guessing.
-- Show you a short **stage menu** and, because the brief is already written, propose jumping
+- Show you a short **stage menu** and, because the spec is already written, propose jumping
   straight to the **domain model** stage. 👉 Confirm.
 - Delegate modeling to **`cap-developer`** and create [`db/schema.cds`](../../xstravels/db/schema.cds)
-  from the brief's core entities — `Travels`, `Bookings`, `Customers`, `TravelAgencies`,
+  from the spec's core entities — `Travels`, `Bookings`, `Customers`, `TravelAgencies`,
   `Flights`, and a `TravelStatus` code list — following CAP conventions:
   - reuse the `cuid` and `managed` aspects from `@sap/cds/common`,
   - model **Travel → Bookings** as a `Composition of many`,
@@ -146,7 +146,7 @@ have a model and data, but no service yet. That's Exercise 2.
 
 ## Summary
 
-You turned the brief into a CDS domain model and realistic sample data — without typing CDS by
+You turned the spec into a CDS domain model and realistic sample data — without typing CDS by
 hand. You directed the AI, reviewed each decision, and verified the model deploys.
 
 Key files created:

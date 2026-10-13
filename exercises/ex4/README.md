@@ -4,7 +4,7 @@
 — as a declarative **state machine**. CAP enforces the allowed transitions, updates the status
 automatically, and even generates the action buttons in a Fiori UI. Again: no handler code.
 
-The brief described a lifecycle: a travel moves through states, and only certain transitions are
+The spec described a lifecycle: a travel moves through states, and only certain transitions are
 allowed (you can't accept a travel that was never open). The procedural approach is a web of
 `if (status === …)` checks in handlers. CAP's declarative approach is the **`@flow.status`**
 annotation: you declare the status element and, per action, which states it may run **`@from`**
@@ -16,7 +16,7 @@ declarative arc.
 👉 Continue the guided flow in Claude Code:
 
 ```text
-Continue. Model the travel lifecycle from the brief as a status flow with accept, reject,
+Continue. Model the travel lifecycle from the spec as a status flow with accept, reject,
 and reopen actions.
 ```
 
@@ -106,7 +106,7 @@ works again. The state machine is doing exactly what you declared.
 
 ## Extend it yourself
 
-The brief's lifecycle also mentions an **InReview** state (`P`).
+The spec's lifecycle also mentions an **InReview** state (`P`).
 
 👉 Ask the AI to add a `submitForReview` action that moves a travel `@from: [#Open] @to:
 #InReview`, and adjust `acceptTravel`/`rejectTravel` to run `@from: [#InReview]` instead of

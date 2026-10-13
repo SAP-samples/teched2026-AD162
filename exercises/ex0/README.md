@@ -138,7 +138,7 @@ other tooling, then reports what's installed, outdated, or missing.
 
 This repository ships a **seed** CAP project at [`xstravels/`](../../xstravels) — a fresh
 `cds init` project whose [`readme.md`](../../xstravels/readme.md) already contains the xstravels
-**project brief** (the agreed problem statement). This is your starting point: an empty app and a
+**project spec** (the agreed problem statement). This is your starting point: an empty app and a
 clear idea. You'll build everything else *with the AI* in the following exercises.
 
 👉 Install its dependencies:
@@ -159,22 +159,22 @@ The app has no domain model yet; you'll create it in Exercise 1.
 
 👉 Stop the server with `Ctrl+C`.
 
-## Read the brief
+## Read the spec
 
-👉 Open [`xstravels/readme.md`](../../xstravels/readme.md) and skim the project brief: the
+👉 Open [`xstravels/readme.md`](../../xstravels/readme.md) and skim the project spec: the
 purpose, the actors, the core entities, the lifecycle, and the **hard rules** the system must
 enforce.
 
 > [!TIP]
 > These are the decisions the AI will build on — and the hard rules become the declarative
-> constraints you add in Exercise 3. A couple of minutes reading the brief now makes every later
+> constraints you add in Exercise 3. A couple of minutes reading the spec now makes every later
 > stage click into place.
 
 ## Summary
 
 You now have the latest `@sap/cds-dk`, the CAP skills installed in Claude Code (`cap-developer`
 plugin from `capire/skills`), a verified environment (via `cap-check-setup`), and the xstravels
-seed project ready to grow — with its brief in [`xstravels/readme.md`](../../xstravels/readme.md).
+seed project ready to grow — with its spec in [`xstravels/readme.md`](../../xstravels/readme.md).
 
 ---
 

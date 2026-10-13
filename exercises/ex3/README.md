@@ -1,10 +1,10 @@
 # Exercise 3 — Declarative constraints
 
-**Goal:** make the service enforce the brief's **hard rules** — required fields, cross-field
+**Goal:** make the service enforce the spec's **hard rules** — required fields, cross-field
 checks, referential checks, even a "no overlapping travels" uniqueness rule — **declaratively**,
 with no handler code.
 
-The brief listed the rules the system must guarantee on every write. The instinct is to write
+The spec listed the rules the system must guarantee on every write. The instinct is to write
 JavaScript validation handlers. CAP's answer is better: express most rules as **annotations** on
 the model. Declarative constraints are enforced consistently across OData, drafts, and batch
 requests, show up in metadata, and can't be bypassed by another handler — none of which a
@@ -16,12 +16,12 @@ is explicit: *before writing any logic, ask whether it can be expressed declarat
 👉 Continue the guided flow in Claude Code:
 
 ```text
-Continue to the constraints stage. Enforce the hard rules from the brief — declaratively.
+Continue to the constraints stage. Enforce the hard rules from the spec — declaratively.
 ```
 
 ### What the skill should do
 
-- Move to the **constraints** stage and work through the brief's hard rules one by one.
+- Move to the **constraints** stage and work through the spec's hard rules one by one.
 - For **each** rule, ask "can this be an annotation?" and reach for the declarative form — it
   should *not* write a `before` handler for these. It verifies the exact `@assert` syntax against
   the CAP docs (the `cap` MCP tools) rather than guessing.
@@ -165,13 +165,13 @@ It's **rejected** with your i18n messages, wrapped as multiple errors:
 
 ## Extend it yourself
 
-👉 Pick one more rule from the brief (or invent one) and ask the AI to add it declaratively — for
+👉 Pick one more rule from the spec (or invent one) and ask the AI to add it declaratively — for
 example, *"a travel's booking fee may not exceed 100"*. Watch it reach for `@assert.range` or a
 `case` expression rather than a handler, then prove it with a failing and a passing request.
 
 ## Summary
 
-You turned the brief's hard rules into a declarative validation layer — required fields,
+You turned the spec's hard rules into a declarative validation layer — required fields,
 cross-field and cross-entity checks, and a uniqueness rule — with zero handler code, verified live.
 
 Key files created:

@@ -1,6 +1,6 @@
 # xstravels — a travel booking app
 
-> This is the **project brief** for xstravels. It is the first artifact of the
+> This is the **project spec** for xstravels. It is the first artifact of the
 > `cap-guided-dev` flow (stage 1 — *rough idea*): a short, agreed problem statement that
 > every later stage builds on. You start the TechEd AD162 build from here — the domain
 > model, services, constraints, and so on are what you'll create *with* the AI, stage by
@@ -66,7 +66,7 @@ File or Folder | Purpose
 `app/` | content for UI frontends goes here
 `db/` | your domain models and data go here
 `srv/` | your service models and code go here
-`readme.md` | this project brief
+`readme.md` | this project spec
 
 ## Learn more
 
