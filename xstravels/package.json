@@ -1,0 +1,19 @@
+{
+  "name": "xstravels",
+  "version": "1.0.0",
+  "description": "A travel booking app — the AD162 seed you build on with Claude Code and cap-guided-dev.",
+  "type": "module",
+  "dependencies": {
+    "@sap/cds": "^10"
+  },
+  "devDependencies": {
+    "@cap-js/cds-test": "^1",
+    "@cap-js/sqlite": "^3"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch": "cds watch",
+    "test": "cds test"
+  },
+  "private": true
+}
