@@ -51,7 +51,7 @@ entity Travels as projection on my.Travels actions {
 ```cds
 using { TravelService } from './travel-service';
 
-annotate TravelService.Travels with @flow.status: Status actions {
+annotate TravelService.Travels with @flow.status: status actions {
   acceptTravel  @from: [ #Open ]                 @to: #Accepted;
   rejectTravel  @from: [ #Open ]                 @to: #Rejected;
   reopenTravel  @from: [ #Rejected, #Accepted ]  @to: #Open;
@@ -59,7 +59,7 @@ annotate TravelService.Travels with @flow.status: Status actions {
 ```
 
 > [!TIP]
-> **What `@flow.status` buys you.** `@flow.status: Status` designates the status element. `@from`
+> **What `@flow.status` buys you.** `@flow.status: status` designates the status element. `@from`
 > lists the states an action is allowed to run in; `@to` is the state it moves the entity to. At
 > runtime CAP **guards** every call (rejecting invalid transitions), **updates the status
 > automatically** on success, and — in a Fiori Elements UI — **generates the action buttons** with
@@ -67,7 +67,7 @@ annotate TravelService.Travels with @flow.status: Status actions {
 
 ## Verify it
 
-👉 Run `cds watch`, then pick an **Open** travel (`Status_code` `O`) and accept it:
+👉 Run `cds watch`, then pick an **Open** travel (`status_code` `O`) and accept it:
 
 ```bash
 curl -s -o /dev/null -w "HTTP %{http_code}\n" -u alice: -X POST \
@@ -79,8 +79,8 @@ You get **`HTTP 204`**, and the status flips automatically:
 
 ```bash
 curl -s -u alice: \
-  "http://localhost:4004/odata/v4/travel/Travels(<same-ID>)?\$select=Description,Status_code"
-# → "Status_code":"A"
+  "http://localhost:4004/odata/v4/travel/Travels(<same-ID>)?\$select=description,status_code"
+# → "status_code":"A"
 ```
 
 👉 Now try an **illegal** transition — accept the same travel again (it's no longer Open):
@@ -94,7 +94,7 @@ curl -s -u alice: -X POST \
 CAP rejects it with a precise, framework-generated error:
 
 ```json
-{"error":{"message":"Action \"acceptTravel\" requires \"Status_code\" to be \"[\"Open\"]\".","code":"INVALID_FLOW_TRANSITION_SINGLE"}}
+{"error":{"message":"Action \"acceptTravel\" requires \"status_code\" to be \"[\"Open\"]\".","code":"INVALID_FLOW_TRANSITION_SINGLE"}}
 ```
 
 👉 Finally, `reopenTravel` on the accepted travel brings it back to Open — and now `acceptTravel`

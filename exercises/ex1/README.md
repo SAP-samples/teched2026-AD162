@@ -47,30 +47,30 @@ namespace sap.capire.travels;
 using { cuid, managed, Currency, sap.common.CodeList } from '@sap/cds/common';
 
 entity Travels : cuid, managed {
-  Description : String(1024);
-  BeginDate   : Date;
-  EndDate     : Date;
-  BookingFee  : Decimal(9,2);
-  TotalPrice  : Decimal(9,2) @readonly;
-  Currency    : Currency;
-  Status      : Association to TravelStatus default 'O';
-  Agency      : Association to TravelAgencies;
-  Customer    : Association to Customers;
-  Bookings    : Composition of many Bookings on Bookings.Travel = $self;
+  description : String(1024);
+  beginDate   : Date;
+  endDate     : Date;
+  bookingFee  : Decimal(9,2);
+  totalPrice  : Decimal(9,2) @readonly;
+  currency    : Currency;
+  status      : Association to TravelStatus default 'O';
+  agency      : Association to TravelAgencies;
+  customer    : Association to Customers;
+  bookings    : Composition of many Bookings on bookings.travel = $self;
 }
 
 entity Bookings : cuid {
-  Travel      : Association to Travels;
-  Pos         : Integer @readonly;
-  Flight      : Association to Flights;
-  FlightPrice : Decimal(9,2);
-  Currency    : Currency;
-  BookingDate : Date;
+  travel      : Association to Travels;
+  pos         : Integer @readonly;
+  flight      : Association to Flights;
+  flightPrice : Decimal(9,2);
+  currency    : Currency;
+  bookingDate : Date;
 }
 
-entity TravelAgencies : cuid, managed { Name: String(80); Street: String(60); City: String(40); Country: String(3); }
-entity Customers      : cuid, managed { FirstName: String(40); LastName: String(40); Email: String(255); }
-entity Flights        : cuid { Airline: String(3); FlightNo: String(4); date: Date; Origin: String(3); Destination: String(3); Price: Decimal(9,2); Currency: Currency; }
+entity TravelAgencies : cuid, managed { name: String(80); street: String(60); city: String(40); country: String(3); }
+entity Customers      : cuid, managed { firstName: String(40); lastName: String(40); email: String(255); }
+entity Flights        : cuid { airline: String(3); flightNo: String(4); date: Date; origin: String(3); destination: String(3); price: Decimal(9,2); currency: Currency; }
 
 entity TravelStatus : CodeList {
   key code : String(1) enum { Open='O'; InReview='P'; Blocked='B'; Accepted='A'; Rejected='X'; }
@@ -79,7 +79,7 @@ entity TravelStatus : CodeList {
 
 > [!TIP]
 > This is the moment to catch a wrong modeling decision. Does `Travels` really *compose* its
-> `Bookings` (parent-child)? Are references associations, not compositions? Everything later
+> `bookings` (parent-child)? Are references associations, not compositions? Everything later
 > builds on this — a wrong choice here makes the services, constraints, and flows wrong too.
 
 > [!IMPORTANT]
@@ -112,8 +112,8 @@ them.
 
 > [!NOTE]
 > **What the CLI fills vs. what the AI fills.** The CLI generates the primary keys (the `ID`
-> columns). It does **not** populate association foreign keys (e.g. `Agency_ID`, `Customer_ID`,
-> `Travel_ID`) or any content — those are left empty. The AI fills the descriptive columns *and*
+> columns). It does **not** populate association foreign keys (e.g. `agency_ID`, `customer_ID`,
+> `travel_ID`) or any content — those are left empty. The AI fills the descriptive columns *and*
 > wires the foreign keys so travels point at real agencies/customers and bookings point at their
 > travel. Keep the generated primary-key UUIDs stable, and make every foreign key reference an `ID`
 > that actually exists in the related file.

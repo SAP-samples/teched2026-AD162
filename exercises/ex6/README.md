@@ -52,14 +52,14 @@ Then use the cap-hcql skill to run a few queries.
 ```bash
 curl -s -u alice: "http://localhost:4004/hcql/travel" \
   -H "Content-Type: text/plain" \
-  --data 'SELECT from Travels { ID, Description, TotalPrice, Currency.code as Currency } limit 3'
+  --data 'SELECT from Travels { ID, description, totalPrice, currency.code as currency } limit 3'
 ```
 
 ```json
 {"data":[
-  {"ID":"...","Description":"Summer trip to New York","TotalPrice":"1610.00","Currency":"EUR"},
-  {"ID":"...","Description":"London business travel","TotalPrice":"650.00","Currency":"GBP"},
-  {"ID":"...","Description":"Transatlantic conference","TotalPrice":"920.00","Currency":"USD"}
+  {"ID":"...","description":"Summer trip to New York","totalPrice":"1610.00","currency":"EUR"},
+  {"ID":"...","description":"London business travel","totalPrice":"650.00","currency":"GBP"},
+  {"ID":"...","description":"Transatlantic conference","totalPrice":"920.00","currency":"USD"}
 ]}
 ```
 
@@ -68,16 +68,16 @@ curl -s -u alice: "http://localhost:4004/hcql/travel" \
 ```bash
 curl -s -u alice: "http://localhost:4004/hcql/travel" \
   -H "Content-Type: text/plain" \
-  --data 'SELECT from Travels { ID, Description, Bookings { Pos, FlightPrice, Currency.code as Currency } } limit 2'
+  --data 'SELECT from Travels { ID, description, bookings { pos, flightPrice, currency.code as currency } } limit 2'
 ```
 
 ```json
 {"data":[
-  {"ID":"...","Description":"Summer trip to New York","Bookings":[
-    {"Pos":1,"FlightPrice":"780.00","Currency":"EUR"},
-    {"Pos":2,"FlightPrice":"810.00","Currency":"EUR"}]},
-  {"ID":"...","Description":"London business travel","Bookings":[
-    {"Pos":1,"FlightPrice":"650.00","Currency":"GBP"}]}
+  {"ID":"...","description":"Summer trip to New York","bookings":[
+    {"pos":1,"flightPrice":"780.00","currency":"EUR"},
+    {"pos":2,"flightPrice":"810.00","currency":"EUR"}]},
+  {"ID":"...","description":"London business travel","bookings":[
+    {"pos":1,"flightPrice":"650.00","currency":"GBP"}]}
 ]}
 ```
 
@@ -86,7 +86,7 @@ curl -s -u alice: "http://localhost:4004/hcql/travel" \
 ```bash
 curl -s -u alice: "http://localhost:4004/hcql/travel" \
   -H "Content-Type: text/plain" \
-  --data "SELECT from Travels { ID, Description, BeginDate } where Status.code = 'O' order by BeginDate desc limit 5"
+  --data "SELECT from Travels { ID, description, beginDate } where status.code = 'O' order by beginDate desc limit 5"
 ```
 
 > [!TIP]

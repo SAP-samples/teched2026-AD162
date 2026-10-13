@@ -70,7 +70,7 @@ tools:
 
 ```text
 ⏺ cds:TravelService - describe (MCP)()
-⏺ cds:TravelService - query (MCP)(cql: "SELECT from Travels { ID, Description, Agency.Name, TotalPrice, Status.name } where Status.code = 'O'")
+⏺ cds:TravelService - query (MCP)(cql: "SELECT from Travels { ID, description, agency.name, totalPrice, status.name } where status.code = 'O'")
 ```
 
 > [!NOTE]
@@ -93,7 +93,7 @@ carrying the CQL the agent built:
 
 ```js
 [mcp] - query { service: 'TravelService',
-  cql: "SELECT from Travels { ID, Description, TotalPrice, Status.name } where Status.code = 'O'" }
+  cql: "SELECT from Travels { ID, description, totalPrice, status.name } where status.code = 'O'" }
 ```
 
 > [!NOTE]
@@ -121,7 +121,7 @@ npx @modelcontextprotocol/inspector
 Then connect with Transport **Streamable HTTP**, URL `http://localhost:4004/mcp/travel`, and an
 Authorization header `Basic YWxpY2U6` (that's `alice:` base64-encoded). **List Tools** shows
 `describe` and `query` (and `call_action` **once the service has an unbound action** — see the note
-below). Run `query` with a `cql` argument such as `SELECT from Travels { ID, Description }` to get
+below). Run `query` with a `cql` argument such as `SELECT from Travels { ID, description }` to get
 rows back in the compact TOON format — fully deterministic.
 
 > [!NOTE]

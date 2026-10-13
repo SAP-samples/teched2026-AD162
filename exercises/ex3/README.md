@@ -48,55 +48,55 @@ extend my.Travels with {
 
 annotate TravelService.Travels with {
 
-  Description @assert: (case
-    when Description is null then 'Description is required'
-    when length(trim(Description)) < 3 then 'Description is too short'
+  description @assert: (case
+    when description is null then 'Description is required'
+    when length(trim(description)) < 3 then 'Description is too short'
   end);
 
-  Agency @mandatory @assert: (case
-    when not exists Agency then 'ASSERT_AGENCY_UNKNOWN'
+  agency @mandatory @assert: (case
+    when not exists agency then 'ASSERT_AGENCY_UNKNOWN'
   end);
 
-  Customer @mandatory @assert: (case
-    when not exists Customer then 'ASSERT_CUSTOMER_UNKNOWN'
+  customer @mandatory @assert: (case
+    when not exists customer then 'ASSERT_CUSTOMER_UNKNOWN'
   end);
 
-  BeginDate @mandatory @assert: (case
-    when EndDate < BeginDate then 'ASSERT_BEGINDATE_BEFORE_ENDDATE'
-    when exists Bookings[Flight.date < $self.BeginDate] then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
+  beginDate @mandatory @assert: (case
+    when endDate < beginDate then 'ASSERT_BEGINDATE_BEFORE_ENDDATE'
+    when exists bookings[flight.date < $self.beginDate] then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
     // no second travel of the same customer may overlap this one
     when exists others[
-         Customer.ID = $self.Customer.ID
+         customer.ID = $self.customer.ID
          and ID != $self.ID
-         and BeginDate <= $self.EndDate
-         and EndDate   >= $self.BeginDate
+         and beginDate <= $self.endDate
+         and endDate   >= $self.beginDate
        ] then 'ASSERT_NO_OVERLAPPING_TRAVELS'
   end);
 
-  EndDate @mandatory @assert: (case
-    when EndDate < BeginDate then 'ASSERT_ENDDATE_AFTER_BEGINDATE'
-    when exists Bookings[Flight.date > $self.EndDate] then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
+  endDate @mandatory @assert: (case
+    when endDate < beginDate then 'ASSERT_ENDDATE_AFTER_BEGINDATE'
+    when exists bookings[flight.date > $self.endDate] then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
   end);
 
-  BookingFee @assert: (case
-    when BookingFee < 0 then 'ASSERT_BOOKING_FEE_NON_NEGATIVE'
+  bookingFee @assert: (case
+    when bookingFee < 0 then 'ASSERT_BOOKING_FEE_NON_NEGATIVE'
   end);
 }
 
 annotate TravelService.Bookings with {
-  Travel @mandatory;
-  Flight @mandatory;
+  travel @mandatory;
+  flight @mandatory;
 
-  FlightPrice @assert: (case
-    when FlightPrice < 0 then 'ASSERT_FLIGHT_PRICE_NON_NEGATIVE'
+  flightPrice @assert: (case
+    when flightPrice < 0 then 'ASSERT_FLIGHT_PRICE_NON_NEGATIVE'
   end);
 
-  Currency @assert: (case
-    when Currency.code != Travel.Currency.code then 'ASSERT_BOOKING_CURRENCY_MATCHES_TRAVEL'
+  currency @assert: (case
+    when currency.code != travel.currency.code then 'ASSERT_BOOKING_CURRENCY_MATCHES_TRAVEL'
   end);
 
-  BookingDate @assert: (case
-    when BookingDate > Travel.EndDate then 'ASSERT_NO_BOOKINGS_AFTER_TRAVEL'
+  bookingDate @assert: (case
+    when bookingDate > travel.endDate then 'ASSERT_NO_BOOKINGS_AFTER_TRAVEL'
   end);
 }
 ```
@@ -128,7 +128,7 @@ ASSERT_NO_BOOKINGS_AFTER_TRAVEL = A booking date must not be after the travel en
 > - The uniqueness **`others` helper must `extend` the DB entity** (`my.Travels`), not the service
 >   projection — CDS can't add elements to a projection that way, and will error.
 > - The **booking-in-period check is expressed from the Travel** via
->   `exists Bookings[Flight.date …]`, not as an annotation on the Booking's `Flight.date` (which
+>   `exists bookings[flight.date …]`, not as an annotation on the Booking's `flight.date` (which
 >   isn't a foreign key and would only produce a warning).
 
 ## Verify it
@@ -139,22 +139,22 @@ agency/customer IDs from `GET …/TravelAgencies` and `GET …/Customers`):
 ```bash
 curl -s -u alice: -X POST "http://localhost:4004/odata/v4/travel/Travels" \
   -H "Content-Type: application/json" \
-  -d '{"Description":"Bad dates","BeginDate":"2026-08-10","EndDate":"2026-08-01","Currency_code":"EUR","Agency_ID":"<an agency ID>","Customer_ID":"<a customer ID>"}'
+  -d '{"description":"Bad dates","beginDate":"2026-08-10","endDate":"2026-08-01","currency_code":"EUR","agency_ID":"<an agency ID>","customer_ID":"<a customer ID>"}'
 ```
 
 It's **rejected** with your i18n messages, wrapped as multiple errors:
 
 ```json
 {"error":{"message":"Multiple errors occurred, see details below.","code":"MULTIPLE_ERRORS","details":[
-  {"message":"The begin date must not be after the end date.","code":"ASSERT_BEGINDATE_BEFORE_ENDDATE","target":"BeginDate"},
-  {"message":"The end date must not be before the begin date.","code":"ASSERT_ENDDATE_AFTER_BEGINDATE","target":"EndDate"}
+  {"message":"The begin date must not be after the end date.","code":"ASSERT_BEGINDATE_BEFORE_ENDDATE","target":"beginDate"},
+  {"message":"The end date must not be before the begin date.","code":"ASSERT_ENDDATE_AFTER_BEGINDATE","target":"endDate"}
 ]}}
 ```
 
 👉 Try a negative booking fee — rejected with a single, readable message:
 
 ```json
-{"error":{"message":"The booking fee must not be negative.","code":"ASSERT_BOOKING_FEE_NON_NEGATIVE","target":"BookingFee"}}
+{"error":{"message":"The booking fee must not be negative.","code":"ASSERT_BOOKING_FEE_NON_NEGATIVE","target":"bookingFee"}}
 ```
 
 👉 Submit a **valid** travel and confirm you get **HTTP 201 Created**.

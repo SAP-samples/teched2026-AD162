@@ -48,10 +48,10 @@ const { POST, expect } = cds.test(import.meta.dirname + '/..')
 describe('submitForReview', () => {
   it('rejects submitting an empty travel (no bookings)', async () => {
     const { data: travel } = await POST('/odata/v4/travel/Travels', {
-      Description: 'Empty travel',
-      BeginDate: '2026-09-01', EndDate: '2026-09-10',
-      Currency_code: 'EUR',
-      Agency_ID: '<an agency ID>', Customer_ID: '<a customer ID>',
+      description: 'Empty travel',
+      beginDate: '2026-09-01', endDate: '2026-09-10',
+      currency_code: 'EUR',
+      agency_ID: '<an agency ID>', customer_ID: '<a customer ID>',
     }, { auth: { username: 'alice' } })
 
     await expect(
@@ -92,7 +92,7 @@ export default class TravelService extends cds.ApplicationService {
     this.before('submitForReview', 'Travels', async req => {
       const { ID } = req.params[0]
       const bookings = await SELECT.one`count(*) as n`
-        .from('sap.capire.travels.Bookings').where({ Travel_ID: ID })
+        .from('sap.capire.travels.Bookings').where({ travel_ID: ID })
       if (!bookings?.n) {
         req.reject(400, 'A travel must have at least one booking before it can be submitted for review.')
       }
@@ -128,7 +128,7 @@ and the status moves to `InReview`.
 > [!NOTE]
 > **A booking added via a direct `POST /Bookings` isn't re-checked against the parent's period
 > rule.** The booking-in-travel-period constraint from Exercise 3 lives on `Travels` (`exists
-> Bookings[…]`), so it runs when a *travel* is written — not when you insert a booking straight into
+> bookings[…]`), so it runs when a *travel* is written — not when you insert a booking straight into
 > the `Bookings` set. If you add bookings this way for the live check, a flight date outside the
 > travel period won't be rejected. That's inherent to where the check lives; writing through the
 > travel (deep update) re-evaluates it.

@@ -100,7 +100,7 @@ That `Travels_Recommendations` entity is what a draft-enabled Fiori UI reads to 
 
 > [!TIP]
 > The payoff is most visual in a draft-enabled Fiori Elements app: create a new travel and the
-> value-helped fields (Agency, Customer) show recommended values. The base xstravels build is
+> value-helped fields (`agency`, `customer`) show recommended values. The base xstravels build is
 > headless, so generating that UI is out of scope here — your facilitator will demo it, or you can
 > add a Fiori app yourself if you finish early.
 
@@ -114,12 +114,12 @@ predictions that a Fiori UI renders as soft-fill defaults.
 
 ```cds
 annotate TravelService.Travels with {
-  Customer @UI.RecommendationState: 0;   // 0 = excluded
+  customer @UI.RecommendationState: 0;   // 0 = excluded
 }
 ```
 
 > [!TIP]
-> It accepts dynamic expressions too — e.g. `Agency @UI.RecommendationState: (TotalPrice > 10000 ?
+> It accepts dynamic expressions too — e.g. `agency @UI.RecommendationState: (totalPrice > 10000 ?
 > 0 : 1)` — so you can suppress recommendations conditionally without any handler.
 
 ## Optional — connect real SAP AI Core

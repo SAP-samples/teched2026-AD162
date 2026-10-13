@@ -71,16 +71,16 @@ This time the log shows the service being served:
 👉 Query it live. In a second terminal (or your REST client), fetch a few travels:
 
 ```bash
-curl -s -u alice: "http://localhost:4004/odata/v4/travel/Travels?\$select=Description,TotalPrice,Status_code&\$top=3"
+curl -s -u alice: "http://localhost:4004/odata/v4/travel/Travels?\$select=description,totalPrice,status_code&\$top=3"
 ```
 
 You should get your sample rows back as JSON — real descriptions, totals, and status codes:
 
 ```json
 {"@odata.context":"$metadata#Travels","value":[
-  {"Description":"Summer trip to New York","TotalPrice":"1610.00","Status_code":"A","ID":"..."},
-  {"Description":"London business travel","TotalPrice":"650.00","Status_code":"O","ID":"..."},
-  {"Description":"Transatlantic conference","TotalPrice":"920.00","Status_code":"P","ID":"..."}
+  {"description":"Summer trip to New York","totalPrice":"1610.00","status_code":"A","ID":"..."},
+  {"description":"London business travel","totalPrice":"650.00","status_code":"O","ID":"..."},
+  {"description":"Transatlantic conference","totalPrice":"920.00","status_code":"P","ID":"..."}
 ]}
 ```
 
