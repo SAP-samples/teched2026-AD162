@@ -12,7 +12,7 @@ minimal handler to make it pass.
 In Exercises 3 and 4 you expressed every rule declaratively — and that's the goal. But some rules
 genuinely can't be an annotation: they need a DB lookup, an external call, or async work. *"A
 travel can only be submitted for review if it has at least one booking"* is one of them — it has to
-count related rows. That's a legitimate handler. The `cap-guided-dev` **custom handlers** stage
+check for related rows in the database. That's a legitimate handler. The `cap-guided-dev` **custom handlers** stage
 builds these **test-first**, because handler logic is where subtle, app-specific bugs hide.
 
 ## Build it test-first
@@ -27,7 +27,7 @@ write the test, watch it fail, then the handler.
 
 ### What the skill should do
 
-- Confirm this rule **can't** be declarative (it counts rows on another entity) — naming the
+- Confirm this rule **can't** be declarative (it queries another entity) — naming the
   reason, per the skill's "handler is the last resort" rule.
 - Make sure the `submitForReview` action exists (`@from: [#Open] @to: #InReview`); add it if ex4's
   bonus wasn't done.
@@ -88,12 +88,12 @@ import cds from '@sap/cds'
 
 export default class TravelService extends cds.ApplicationService {
   init() {
-    // Can't be a declarative @assert — it needs a DB lookup (count related rows).
+    const { Bookings } = this.entities
+    // Can't be a declarative @assert — it needs a DB lookup (does any booking exist?).
     this.before('submitForReview', 'Travels', async req => {
       const { ID } = req.params[0]
-      const bookings = await SELECT.one`count(*) as n`
-        .from('sap.capire.travels.Bookings').where({ travel_ID: ID })
-      if (!bookings?.n) {
+      const booking = await SELECT.one.from(Bookings).where({ travel_ID: ID })
+      if (!booking) {
         req.reject(400, 'A travel must have at least one booking before it can be submitted for review.')
       }
     })
