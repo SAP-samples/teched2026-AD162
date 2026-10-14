@@ -8,7 +8,7 @@ development environment with an AI skill, and get the **xstravels seed** project
 > **The idea of this session.** You won't copy-paste a finished app. You'll *direct* Claude Code —
 > grounded in the CAP team's own skills — to build xstravels one small, reviewable stage at a
 > time. The "latest and greatest" CAP features (`@assert` constraints, `@flow.status` state
-> machines, HCQL, AI recommendations, MCP) emerge naturally as you reach each stage. You stay in
+> machines, HCQL, vector-embedding search, MCP) emerge naturally as you reach each stage. You stay in
 > control: every step is a diff you review before moving on.
 
 Throughout the exercises, a line beginning with 👉 is something **you actually do**. Everything

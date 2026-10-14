@@ -1,145 +1,198 @@
-# Exercise 7 — AI recommendations in the UI
+# Exercise 7 — Semantic search with vector embeddings
 
-**Goal:** add the `@cap-js/ai` plugin so draft-enabled Fiori fields get **AI-powered value
-recommendations** — out of the box, no custom handler — and understand how it works under the hood.
+**Goal:** add a **vector embedding** to travels and run a **semantic search** — find travels by
+*meaning*, not keywords — straight over the API, with no UI and no external AI service. A search for
+*"skiing in snowy mountains"* finds *"Alpine getaway"* even though they share no words.
 
-CAP ships an AI plugin that detects fields with value helps and offers intelligent recommendations
-in draft-enabled Fiori Elements UIs, powered by SAP's RPT-1 model (via the Calesi pattern). You
-install it, and it wires itself in. This is another `cap-guided-dev` **plugins** stage step.
+> [!NOTE]
+> This is a **pick-your-adventure** exercise — do it in any order. It builds on the domain model and
+> service from Exercises 1–2.
+
+Classic search matches *characters*: "beach" finds rows containing "beach". **Vector embeddings**
+match *meaning*: text is turned into a numeric vector that captures semantics, so two phrases about
+the same idea land close together even with no shared words. CAP makes this a first-class modelling
+feature — a `Vector` element plus the `cosine_similarity` function — and it runs **locally on
+SQLite** for development. This is a `cap-guided-dev` **plugins** stage step.
 
 > [!IMPORTANT]
-> **Setup first — this plugin needs a local embedding model (~290 MB).** Recent `@cap-js/ai`
-> downloads an embedding model plus native packages (`onnxruntime-node` ~180 MB + the model ~97 MB)
-> on first start, and **the server won't boot until they're present**. If the TechEd notebook has
-> these pre-installed, startup is instant — your facilitator will confirm. Otherwise, install them
-> **once, up front, and ideally before the session** (it's a large download — don't do it live on
+> **Setup — the local embedding model is a large download (~290 MB).** To compute embeddings
+> offline, `@cap-js/ai` pulls native packages (`onnxruntime-node` ~180 MB) and, on first `cds watch`,
+> an embedding model (~97 MB). **The server waits for the model on first start.** If the TechEd
+> notebook has these pre-installed, startup is instant — your facilitator will confirm. Otherwise
+> install the packages **once, up front, ideally before the session** (don't pull ~290 MB live on
 > shared wifi):
 >
 > ```bash
-> npm add -D @huggingface/hub @huggingface/tokenizers@0.1.3 onnxruntime-node@1.20.1
-> npx @cap-js/ai install-model sentence-transformers/all-MiniLM-L6-v2
+> npm add -D @cap-js/ai @cap-js/sqlite@^3.1 @huggingface/hub@^2.15.0 @huggingface/tokenizers@0.1.3 onnxruntime-node@1.20.1
 > ```
 >
-> All three dev dependencies are needed — `install-model` fails without `onnxruntime-node`, and the
-> server won't boot without the model.
+> The model itself downloads automatically on the first `cds watch` — no separate install step.
 
 > [!WARNING]
-> The exact dependency set is tied to the `@cap-js/ai` version shipped for the event (verified
-> against **1.2.0**). If `install-model` reports another missing package, add it as a `-D`
-> dependency and retry — the error message names it.
+> The exact peer set is tied to the `@cap-js/ai` version shipped for the event (verified against
+> **`@sap/cds` 10.1** / `@cap-js/sqlite` 3.1). If a start-up error names another missing package, add
+> it as a `-D` dependency and retry — the message tells you which one.
 
-## Add the AI plugin
+## Add an embedding to the model
 
 👉 Continue the guided flow in Claude Code:
 
 ```text
-Add the @cap-js/ai plugin for Fiori field recommendations. Keep it on the local mock service —
-no SAP AI Core binding.
+Add semantic search over travels. Give Travels a vector embedding computed from the description,
+and add a searchTravels(q) function that returns the best matches by cosine similarity. Keep it
+local — use @cap-js/ai on SQLite, no SAP AI Core.
 ```
 
 ### What the skill should do
 
-- Install the plugin:
+- Recognize this as a **vector embeddings** task and reach for the built-in `Vector` type and the
+  `vector_embedding` / `cosine_similarity` functions — verifying their shape against the CAP docs
+  (the `cap` MCP tools) rather than guessing.
+- Install `@cap-js/ai` and peers so the standard `sqlite` database computes embeddings locally.
+- Add a **stored calculated element** `embedding` on `Travels` in
+  [`db/schema.cds`](../../xstravels/db/schema.cds), derived from `description`.
+- Add a **`searchTravels(q)`** function to the service and a small handler that ranks travels by
+  `cosine_similarity`.
 
-  ```bash
-  npm add @cap-js/ai
-  ```
+### Review what good looks like
 
-- Explain that, with no SAP AI Core binding, the plugin uses a built-in **MockAICoreService** — so
-  it works fully **offline**.
-- Note that the plugin auto-detects **draft-enabled** entities with value-helped fields and adds the
-  recommendation wiring for you (synthetic `*_Recommendations` companion entities, `@UI.Recommendations`).
-
-## Enable drafts
-
-The recommendation feature only activates on **draft-enabled** entities — and nothing so far enabled
-drafts on `Travels`.
-
-👉 Enable drafts on `Travels` so the plugin has something to attach to. Create
-[`srv/travel-ui.cds`](../../xstravels/srv/travel-ui.cds):
+👉 The embedding on `Travels` — a `stored` calculated element, so it's persisted and recomputed on
+every write:
 
 ```cds
-using { TravelService } from './travel-service';
-
-annotate TravelService.Travels with @odata.draft.enabled;
-```
-
-> [!NOTE]
-> Draft handling is a Fiori/SAPUI5 mechanism — enabling it is what lets the AI plugin generate the
-> recommendation companion entities. It also makes `Travels` ready for a Fiori Elements UI, should
-> you add one.
-
-## What to look for
-
-👉 Run `cds watch`. You should see the plugin load the AI services in the model list and start
-cleanly (thanks to the pre-installed model):
-
-```text
-[cds] - loaded model from N file(s):
-  ...
-  node_modules/@cap-js/ai/srv/MockAICoreService.cds
-  node_modules/@cap-js/ai/srv/AICoreService.cds
-```
-
-👉 Confirm the plugin wired up recommendations — the companion entity now appears in the service
-metadata (a headless check, no UI needed):
-
-```bash
-curl -s -u alice: "http://localhost:4004/odata/v4/travel/\$metadata" | grep -o "Travels_Recommendations"
-# → Travels_Recommendations
-```
-
-That `Travels_Recommendations` entity is what a draft-enabled Fiori UI reads to offer suggestions.
-
-> [!NOTE]
-> **The mock isn't real AI.** `MockAICoreService` just returns an existing value from your data as
-> the "prediction" — deterministic, not context-aware. It exists to prove the **integration** works
-> end-to-end, offline. Real recommendations need an SAP AI Core binding (below, optional).
-
-### Optional — see it in a Fiori UI
-
-> [!TIP]
-> The payoff is most visual in a draft-enabled Fiori Elements app: create a new travel and the
-> value-helped fields (`agency`, `customer`) show recommended values. The base xstravels build is
-> headless, so generating that UI is out of scope here — your facilitator will demo it, or you can
-> add a Fiori app yourself if you finish early.
-
-## Under the hood
-
-For a draft read that expands the recommendations, the plugin sends up to ~2000 rows of the
-**active** entity as context to RPT-1 (stripping audit and binary fields) and returns scored
-predictions that a Fiori UI renders as soft-fill defaults.
-
-👉 Keep a field out of recommendations (e.g. for privacy) declaratively:
-
-```cds
-annotate TravelService.Travels with {
-  customer @UI.RecommendationState: 0;   // 0 = excluded
+entity Travels : cuid, managed {
+  description : String(1024);
+  // ... the rest of the elements ...
+  embedding   : Vector = vector_embedding(description, 'DOCUMENT', 'SAP_GXY.20250407') stored;
 }
 ```
 
-> [!TIP]
-> It accepts dynamic expressions too — e.g. `agency @UI.RecommendationState: (totalPrice > 10000 ?
-> 0 : 1)` — so you can suppress recommendations conditionally without any handler.
+👉 The search function in [`srv/travel-service.cds`](../../xstravels/srv/travel-service.cds):
 
-## Optional — connect real SAP AI Core
+```cds
+extend service TravelService with {
+  function searchTravels(q: String) returns many {
+    ID          : UUID;
+    description : String;
+    similarity  : Double;
+  };
+}
+```
+
+👉 And its handler in [`srv/travel-service.js`](../../xstravels/srv/travel-service.js):
+
+```js
+this.on('searchTravels', async req => {
+  const { q } = req.data
+  return SELECT.from('sap.capire.travels.Travels')
+    .columns('ID', 'description',
+      `cosine_similarity(embedding, vector_embedding('${q}', 'QUERY', 'SAP_GXY.20250407')) as similarity`)
+    .orderBy('similarity desc')
+    .limit(5)
+})
+```
+
+> [!TIP]
+> **One query, two embeddings.** `vector_embedding(description, 'DOCUMENT', …)` embeds the stored
+> text; `vector_embedding(q, 'QUERY', …)` embeds the user's search phrase. `cosine_similarity`
+> scores how close the two vectors point — 1.0 is a perfect semantic match, 0 is unrelated.
+
+> [!IMPORTANT]
+> Use the **same embedding model** for both the stored `DOCUMENT` embedding and the `QUERY`
+> embedding — similarity is only meaningful within one model's vector space. On SQLite the
+> model-name argument is ignored (the local model is used); the *same* query runs unchanged on SAP
+> HANA, where the name selects a HANA NLP model.
+
+## Verify it
+
+👉 Run the app (first start downloads the model; later starts are instant):
+
+```bash
+cds watch
+```
+
+You'll see the plugin initialize the local model, then the usual deploy:
+
+```text
+[@cap-js/ai] - Vector embedding ONNX model initialized
+/> successfully deployed to in-memory database.
+[cds] - serving TravelService { at: [ '/odata/v4/travel' ] }
+```
+
+👉 Now search by **meaning**. Ask for mountains and skiing — note the top hit shares **no words**
+with the query:
+
+```bash
+curl -s -u alice: "http://localhost:4004/odata/v4/travel/searchTravels(q='skiing in snowy mountains')"
+```
+
+```json
+{"value":[
+  {"ID":"...","description":"Alpine getaway","similarity":0.398},
+  {"ID":"...","description":"Summer trip to New York","similarity":0.292},
+  {"ID":"...","description":"Barcelona city break","similarity":0.075},
+  {"ID":"...","description":"London business travel","similarity":0.041},
+  {"ID":"...","description":"Transatlantic conference","similarity":0.027}
+]}
+```
+
+**"Alpine getaway" wins** — there's no "ski", "snow", or "mountain" in it, yet the embedding knows
+it's the closest in meaning. A keyword search would have returned nothing.
+
+👉 Try a work-trip query — the conference and the business travel rise to the top:
+
+```bash
+curl -s -u alice: "http://localhost:4004/odata/v4/travel/searchTravels(q='corporate work conference meeting')"
+```
+
+```json
+{"value":[
+  {"ID":"...","description":"Transatlantic conference","similarity":0.517},
+  {"ID":"...","description":"London business travel","similarity":0.159},
+  {"ID":"...","description":"Alpine getaway","similarity":0.128},
+  {"ID":"...","description":"Barcelona city break","similarity":0.126},
+  {"ID":"...","description":"Summer trip to New York","similarity":0.095}
+]}
+```
 
 > [!NOTE]
-> Requires an SAP AI Core instance on BTP; **skip if you don't have one** — the mock covers the
-> workshop. With a binding (`cds bind AICore -2 <instance>`), run `cds watch --profile hybrid` and
-> the plugin returns real RPT-1 predictions learned from your data.
+> **The scores are modest and that's expected.** The local `all-MiniLM-L6-v2` model embedding very
+> short descriptions gives smaller absolute similarities than a production HANA model would — what
+> matters is the **ranking**, and the right travels come out on top. With richer text (adding the
+> agency, destinations, or booking notes to the embedded string) the separation sharpens.
+
+> [!TIP]
+> **Let the AI drive the searches.** Ask Claude Code *"find travels about relaxing by the sea"* or
+> *"which travels look like business trips?"* — it calls `searchTravels` for you and reads back the
+> ranked matches, so you can explore semantic search conversationally.
+
+## Under the hood
+
+- **`embedding : Vector = … stored`** is a [calculated element](https://cap.cloud.sap/docs/cds/cdl#calculated-elements):
+  CAP recomputes and persists it on every `CREATE`/`UPDATE`, so embeddings never drift from the
+  source text. `Vector` elements are excluded from default reads — you won't see a wall of numbers
+  in `GET /Travels`.
+- **`@cap-js/ai` emulates `vector_embedding` on SQLite** with a local ONNX model, so the *same* model
+  and the *same* queries you write for SAP HANA run offline in your inner loop — no AI Core, no
+  network. In production on HANA, the model-name argument selects a HANA NLP embedding model and the
+  vectors are stored in HANA's native vector engine.
+
+> [!NOTE]
+> **What you did *not* write:** no embedding pipeline, no vector math, no similarity algorithm, no
+> external AI calls. One `Vector` calculated element and one `cosine_similarity` query — the database
+> does the rest.
 
 ## Summary
 
-You added AI-powered field recommendations with a single `npm add`, enabled drafts so the plugin
-activates, verified the recommendation entity appears in metadata (offline, headless), and learned
-to exclude fields declaratively — no custom AI code.
+You added a vector embedding to `Travels` and a `searchTravels` function, then found travels by
+meaning — ranking "Alpine getaway" first for a skiing query with no shared words — entirely offline
+on SQLite.
 
 Key changes:
 
-- `@cap-js/ai` added as a dependency
-- [`srv/travel-ui.cds`](../../xstravels/srv/travel-ui.cds) — `@odata.draft.enabled` on `Travels`
-- optional `@UI.RecommendationState` annotations
+- `@cap-js/ai` added as a dev dependency (local embeddings on SQLite)
+- [`db/schema.cds`](../../xstravels/db/schema.cds) — the `embedding : Vector = vector_embedding(…) stored` element
+- [`srv/travel-service.cds`](../../xstravels/srv/travel-service.cds) / [`srv/travel-service.js`](../../xstravels/srv/travel-service.js) — the `searchTravels` function and its `cosine_similarity` handler
 
 ---
 
