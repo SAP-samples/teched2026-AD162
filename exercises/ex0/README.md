@@ -69,7 +69,7 @@ cds --version
 
 ## Install the CAP MCP server
 The CAP MCP server is published in github
-https://github.com/cap-js/mcp-server[`github.com/capire/skills`](https://github.com/cap-js/mcp-server).
+[`github.com/cap-js/mcp-server`](https://github.com/cap-js/mcp-server).
 
 👉 In the terminal run:
 
