@@ -67,6 +67,16 @@ cds --version
 > `cds add data --keys-only`). An outdated kit generates stale project layouts and misses flags,
 > which quietly derails later stages.
 
+## Install the CAP MCP server
+The CAP MCP server is published in github
+https://github.com/cap-js/mcp-server[`github.com/capire/skills`](https://github.com/cap-js/mcp-server).
+
+👉 In the terminal run:
+
+```text
+claude mcp add cds-mcp -- npx -y @cap-js/mcp-server
+```
+
 ## Install the CAP skills into Claude Code
 
 The CAP skills are published as a plugin marketplace at
