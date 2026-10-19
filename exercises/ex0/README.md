@@ -30,7 +30,7 @@ else is context to read.
 | `@sap/cds` (runtime) | ^10 |
 | `@cap-js/sqlite` | ^3 |
 | `@cap-js/cds-test` | ^1 |
-| CAP skills | public `github.com/capire/skills` (session release) |
+| CAP skills | public `github.com/capire/skills` (`teched2026-ad162` branch) |
 | CAP MCP docs server | `@cap-js/mcp-server` (`cds-mcp`) |
 | AI tool | Claude Code |
 
@@ -67,25 +67,35 @@ cds --version
 > `cds add data --keys-only`). An outdated kit generates stale project layouts and misses flags,
 > which quietly derails later stages.
 
-## Install the CAP MCP server
-The CAP MCP server is published in github
-[`github.com/cap-js/mcp-server`](https://github.com/cap-js/mcp-server).
+## Install the CAP documentation MCP server
 
-👉 In the terminal run:
+The CAP skills work best when they can look up current CAP docs instead of guessing. The
+**CAP MCP docs server** (`@cap-js/mcp-server`, binary `cds-mcp`) provides exactly that — tools to
+search CAP documentation and inspect your project's effective model. It is published at
+[`github.com/cap-js/mcp-server`](https://github.com/cap-js/mcp-server). On the TechEd notebook it's
+**pre-configured**; otherwise add it yourself.
+
+👉 In the terminal, run:
 
 ```text
 claude mcp add cds-mcp -- npx -y @cap-js/mcp-server
 ```
 
+> [!NOTE]
+> The first run downloads a small embedding model, so allow a moment and a network connection.
+
 ## Install the CAP skills into Claude Code
 
 The CAP skills are published as a plugin marketplace at
-[`github.com/capire/skills`](https://github.com/capire/skills).
+[`github.com/capire/skills`](https://github.com/capire/skills). This session uses the
+**`teched2026-ad162`** branch — a frozen snapshot of the full skill set (including `cap-guided-dev`)
+pinned for this workshop.
 
-👉 In Claude Code, add the marketplace and install the `cap-developer` plugin:
+👉 In Claude Code, add the marketplace (pinned to the `teched2026-ad162` branch) and install the
+`cap-developer` plugin:
 
 ```text
-/plugin marketplace add capire/skills
+/plugin marketplace add capire/skills#teched2026-ad162
 /plugin install cap-developer@cap
 ```
 
@@ -97,26 +107,27 @@ This gives Claude Code the CAP skill library, including:
   **`cap-troubleshooting`** that other exercises use.
 
 > [!WARNING]
-> If a skill isn't found, confirm the marketplace was added and the `cap-developer` plugin
-> installed. The public skills repo is released shortly before the event — ask a facilitator if
-> the plugin install reports a problem.
+> If a skill isn't found, confirm the marketplace was added **with the `#teched2026-ad162` branch**
+> and the `cap-developer` plugin installed. The full skill set (including `cap-guided-dev`) lives
+> on that frozen session branch, not on `main` — ask a facilitator if the plugin install reports a
+> problem.
 
-> [!IMPORTANT]
-> **If the skills marketplace is unreachable, the session still works.** The later exercises are
-> framed as "continue the guided flow," but each one also shows the exact **CDS/JS to produce** in
-> its "Review what good looks like" section. If `capire/skills` can't be reached, you can still do
-> every exercise by asking Claude Code (with the CAP MCP docs server from the next step) to create
-> those artifacts directly, or by typing them yourself. You lose the stage-menu conductor UX, not
-> the content. Flag it to a facilitator either way.
+## Restart Claude Code and verify your setup
 
-## Add the CAP documentation MCP server
+Both the MCP server and the skills are picked up when Claude Code starts.
 
-The CAP skills work best when they can look up current CAP docs instead of guessing. The
-**CAP MCP docs server** (`@cap-js/mcp-server`, binary `cds-mcp`) provides exactly that — tools to
-search CAP documentation and inspect your project's effective model. On the TechEd notebook it's
-**pre-configured**; the steps here are for reference or a non-notebook setup.
+👉 **Restart Claude Code** now that you've installed both, so it loads them.
 
-👉 Confirm Claude Code can reach it by asking a CAP documentation question, e.g.:
+👉 **Verify the skills** — list the installed plugins in Claude Code:
+
+```text
+/plugin
+```
+
+You should see the `cap-developer` plugin from the `cap` marketplace, exposing `cap-guided-dev`,
+`cap-developer`, `cap-check-setup`, `cap-inner-loop`, `cap-hcql`, `cap-troubleshooting`, and more.
+
+👉 **Verify the CAP MCP docs server** — ask Claude Code a CAP documentation question:
 
 ```text
 Using the CAP docs, how does the @flow.status annotation work?
@@ -124,16 +135,8 @@ Using the CAP docs, how does the @flow.status annotation work?
 
 You should get an answer grounded in the official CAP docs (with source links), not a guess.
 
-> [!NOTE]
-> If the server isn't wired up, add it to your AI tool's MCP configuration as a local stdio server
-> running `npx -y @cap-js/mcp-server@latest`, then restart the tool. The first run downloads a small
-> embedding model, so allow a moment and a network connection.
-
-## Verify your environment with AI
-
-Rather than hand-checking tool versions, ask Claude Code to do it.
-
-👉 In Claude Code, prompt:
+👉 **Verify the rest of your environment** — rather than hand-checking tool versions, ask Claude
+Code to do it:
 
 ```text
 Check my CAP development environment.
@@ -182,9 +185,10 @@ enforce.
 
 ## Summary
 
-You now have the latest `@sap/cds-dk`, the CAP skills installed in Claude Code (`cap-developer`
-plugin from `capire/skills`), a verified environment (via `cap-check-setup`), and the xstravels
-seed project ready to grow — with its spec in [`xstravels/readme.md`](../../xstravels/readme.md).
+You now have the latest `@sap/cds-dk`, the CAP MCP docs server (`cds-mcp`), the CAP skills installed
+in Claude Code (`cap-developer` plugin from `capire/skills#teched2026-ad162`), a verified
+environment (via `cap-check-setup`), and the xstravels seed project ready to grow — with its spec in
+[`xstravels/readme.md`](../../xstravels/readme.md).
 
 ---
 
