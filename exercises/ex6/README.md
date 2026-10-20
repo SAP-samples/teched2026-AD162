@@ -55,6 +55,11 @@ curl -s -u alice: "http://localhost:4004/hcql/travel" \
   --data 'SELECT from Travels { ID, description, totalPrice, currency.code as currency } limit 3'
 ```
 
+> [!TIP]
+> **On Windows / prefer not to use a shell?** Open [`requests.http`](requests.http) and click
+> **Send Request** above any query — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+> extension posts the CQL body for you, no shell quoting needed.
+
 ```json
 {"data":[
   {"ID":"...","description":"Summer trip to New York","totalPrice":"1610.00","currency":"EUR"},

@@ -1,0 +1,17 @@
+### Exercise 2 — Services and the running app
+#
+# Run these with the VS Code REST Client extension (humao.rest-client, already recommended
+# for this project): click "Send Request" above any request below. No shell needed — works
+# the same on Windows, macOS, and Linux.
+#
+# `cds watch` must be running in a terminal first.
+
+@host = http://localhost:4004
+
+# Mocked auth: user `alice`, empty password. Local `cds watch` uses a mocked auth strategy,
+# so `alice:` is enough to exercise the API.
+@auth = alice:
+
+### Fetch a few travels (descriptions, totals, status)
+GET {{host}}/odata/v4/travel/Travels?$select=description,totalPrice,status_code&$top=3
+Authorization: Basic {{auth}}

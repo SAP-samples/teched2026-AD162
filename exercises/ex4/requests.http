@@ -1,0 +1,47 @@
+### Exercise 4 — Status flows
+#
+# Run these with the VS Code REST Client extension (humao.rest-client, already recommended
+# for this project): click "Send Request" above any request below. No shell needed — works
+# the same on Windows, macOS, and Linux.
+#
+# The response pane shows the HTTP status line (e.g. `HTTP/1.1 204 No Content`) at the top.
+#
+# These requests CHAIN: send them top to bottom. Later requests reuse the travel ID from the
+# first response automatically (REST Client "request variables"), so nothing is hardcoded —
+# it adapts to whatever sample data this run generated.
+#
+# `cds watch` must be running in a terminal first.
+
+@host = http://localhost:4004
+@auth = alice:
+
+### 1) Find an Open travel (status_code `O`) — SEND THIS FIRST
+# @name openTravel
+GET {{host}}/odata/v4/travel/Travels?$select=ID,description,status_code&$filter=status_code eq 'O'&$top=1
+Authorization: Basic {{auth}}
+
+### 2) Accept that travel — expect HTTP 204, status flips to Accepted
+POST {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})/TravelService.acceptTravel
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{}
+
+### 3) Confirm the status flipped automatically (expect "status_code":"A")
+GET {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})?$select=description,status_code
+Authorization: Basic {{auth}}
+
+### 4) Illegal transition — accept the same travel again (no longer Open)
+# CAP rejects it: code "INVALID_FLOW_TRANSITION_SINGLE".
+POST {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})/TravelService.acceptTravel
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{}
+
+### 5) Reopen the travel — back to Open, so acceptTravel works again
+POST {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})/TravelService.reopenTravel
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{}

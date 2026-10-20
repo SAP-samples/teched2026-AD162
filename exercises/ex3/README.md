@@ -142,6 +142,12 @@ curl -s -u alice: -X POST "http://localhost:4004/odata/v4/travel/Travels" \
   -d '{"description":"Bad dates","beginDate":"2026-08-10","endDate":"2026-08-01","currency_code":"EUR","agency_ID":"<an agency ID>","customer_ID":"<a customer ID>"}'
 ```
 
+> [!TIP]
+> **Skip the shell and the ID hunting.** Open [`requests.http`](requests.http) and click
+> **Send Request** top to bottom — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+> extension grabs a real agency and customer ID from the first two requests and fills them into
+> the create bodies automatically, so there are no UUIDs to copy and it adapts to this run's data.
+
 It's **rejected** with your i18n messages, wrapped as multiple errors:
 
 ```json

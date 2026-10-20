@@ -126,6 +126,11 @@ with the query:
 curl -s -u alice: "http://localhost:4004/odata/v4/travel/searchTravels(q='skiing in snowy mountains')"
 ```
 
+> [!TIP]
+> **On Windows / prefer not to use a shell?** Open [`requests.http`](requests.http) and click
+> **Send Request** above either search — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+> extension runs it with no `curl` and no shell quirks.
+
 ```json
 {"value":[
   {"ID":"...","description":"Alpine getaway","similarity":0.398},

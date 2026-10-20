@@ -1,0 +1,67 @@
+### Exercise 3 — Declarative constraints
+#
+# Run these with the VS Code REST Client extension (humao.rest-client, already recommended
+# for this project): click "Send Request" above any request below. No shell needed — works
+# the same on Windows, macOS, and Linux.
+#
+# The POST requests CHAIN: send requests 1 and 2 first to grab a real agency and customer ID,
+# then the create requests reuse them automatically — no hardcoded UUIDs, resilient to the
+# sample data this run generated.
+#
+# `cds watch` must be running in a terminal first.
+
+@host = http://localhost:4004
+@auth = alice:
+
+### 1) Grab a real agency ID — SEND FIRST
+# @name agency
+GET {{host}}/odata/v4/travel/TravelAgencies?$select=ID,name&$top=1
+Authorization: Basic {{auth}}
+
+### 2) Grab a real customer ID — SEND SECOND
+# @name customer
+GET {{host}}/odata/v4/travel/Customers?$select=ID&$top=1
+Authorization: Basic {{auth}}
+
+### 3) Create a travel with end date before begin date — rejected with your i18n messages
+POST {{host}}/odata/v4/travel/Travels
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{
+  "description": "Bad dates",
+  "beginDate": "2026-08-10",
+  "endDate": "2026-08-01",
+  "currency_code": "EUR",
+  "agency_ID": "{{agency.response.body.$.value[0].ID}}",
+  "customer_ID": "{{customer.response.body.$.value[0].ID}}"
+}
+
+### 4) A negative booking fee — rejected with a single, readable message
+POST {{host}}/odata/v4/travel/Travels
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{
+  "description": "Negative fee",
+  "beginDate": "2026-08-01",
+  "endDate": "2026-08-10",
+  "bookingFee": "-10.00",
+  "currency_code": "EUR",
+  "agency_ID": "{{agency.response.body.$.value[0].ID}}",
+  "customer_ID": "{{customer.response.body.$.value[0].ID}}"
+}
+
+### 5) A valid travel — expect HTTP 201 Created
+POST {{host}}/odata/v4/travel/Travels
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{
+  "description": "Good trip",
+  "beginDate": "2026-08-01",
+  "endDate": "2026-08-10",
+  "currency_code": "EUR",
+  "agency_ID": "{{agency.response.body.$.value[0].ID}}",
+  "customer_ID": "{{customer.response.body.$.value[0].ID}}"
+}

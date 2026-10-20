@@ -65,6 +65,12 @@ curl -s -o /dev/null -w "anon: HTTP %{http_code}\n" \
 # → anon: HTTP 401
 ```
 
+> [!TIP]
+> **Prefer clicks to shell?** Open [`requests.http`](requests.http) and **Send Request** top to
+> bottom — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+> extension runs each role (anonymous, `viewer`, `rachel`, `alice`) and reuses a real InReview
+> travel ID for the accept calls, so there's no `<an-InReview-travel-ID>` to paste.
+
 👉 An authenticated user **without** the reviewer role can read but not accept:
 
 ```bash

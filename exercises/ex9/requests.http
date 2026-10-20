@@ -1,0 +1,46 @@
+### Exercise 9 — Authorization
+#
+# Run these with the VS Code REST Client extension (humao.rest-client, already recommended
+# for this project): click "Send Request" above any request below. No shell needed — works
+# the same on Windows, macOS, and Linux.
+#
+# The response pane shows the HTTP status line at the top — that's what each step checks.
+#
+# The action requests CHAIN off request 3: send request 3 first to pick a real InReview
+# travel, then the viewer/reviewer requests reuse its ID automatically — no hardcoded UUIDs.
+#
+# `cds watch` must be running in a terminal first.
+
+@host = http://localhost:4004
+
+### 1) Anonymous read — rejected (expect HTTP 401)
+# No Authorization header = anonymous.
+GET {{host}}/odata/v4/travel/Travels?$top=1
+
+### 2) Authenticated viewer (no reviewer role) can read (expect HTTP 200)
+GET {{host}}/odata/v4/travel/Travels?$top=1
+Authorization: Basic viewer:
+
+### 3) Find an InReview travel (status_code `P`) to act on — SEND BEFORE 4 & 5
+# alice (admin) is used just to look it up.
+# @name inReview
+GET {{host}}/odata/v4/travel/Travels?$select=ID,description,status_code&$filter=status_code eq 'P'&$top=1
+Authorization: Basic alice:
+
+### 4) viewer cannot accept (expect HTTP 403)
+POST {{host}}/odata/v4/travel/Travels({{inReview.response.body.$.value[0].ID}})/TravelService.acceptTravel
+Authorization: Basic viewer:
+Content-Type: application/json
+
+{}
+
+### 5) rachel (reviewer) CAN accept (expect HTTP 204)
+POST {{host}}/odata/v4/travel/Travels({{inReview.response.body.$.value[0].ID}})/TravelService.acceptTravel
+Authorization: Basic rachel:
+Content-Type: application/json
+
+{}
+
+### 6) alice (admin) can do everything (expect HTTP 200)
+GET {{host}}/odata/v4/travel/Travels?$top=1
+Authorization: Basic alice:

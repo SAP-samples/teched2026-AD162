@@ -1,0 +1,32 @@
+### Exercise 6 — HCQL: CQL over HTTP
+#
+# Run these with the VS Code REST Client extension (humao.rest-client, already recommended
+# for this project): click "Send Request" above any request below. No shell needed — works
+# the same on Windows, macOS, and Linux.
+#
+# HCQL = CQL over HTTP: POST a plain-text CQL statement, get {"data":[…]} back.
+# `cds watch` must be running in a terminal first.
+
+@host = http://localhost:4004
+@auth = alice:
+
+### A simple CQL query as a plain-text POST body
+POST {{host}}/hcql/travel
+Authorization: Basic {{auth}}
+Content-Type: text/plain
+
+SELECT from Travels { ID, description, totalPrice, currency.code as currency } limit 3
+
+### A deep read with an expand — verbose in OData, one natural query here
+POST {{host}}/hcql/travel
+Authorization: Basic {{auth}}
+Content-Type: text/plain
+
+SELECT from Travels { ID, description, bookings { pos, flightPrice, currency.code as currency } } limit 2
+
+### A filtered, ordered query
+POST {{host}}/hcql/travel
+Authorization: Basic {{auth}}
+Content-Type: text/plain
+
+SELECT from Travels { ID, description, beginDate } where status.code = 'O' order by beginDate desc limit 5

@@ -74,6 +74,11 @@ This time the log shows the service being served:
 curl -s -u alice: "http://localhost:4004/odata/v4/travel/Travels?\$select=description,totalPrice,status_code&\$top=3"
 ```
 
+> [!TIP]
+> **On Windows / prefer not to use a shell?** Open [`requests.http`](requests.http) and click
+> **Send Request** above any request — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+> extension (already recommended for this project) runs it with no `curl` and no shell quirks.
+
 You should get your sample rows back as JSON — real descriptions, totals, and status codes:
 
 ```json
