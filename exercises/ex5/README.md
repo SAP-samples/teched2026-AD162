@@ -40,7 +40,8 @@ write the test, watch it fail, then the handler.
 
 ### The test (write this first)
 
-The seed is an ES module project, so the test is ESM too:
+The seed is an ES module project, so the test is ESM too — the AI writes it to
+[`test/submitForReview.test.js`](../../xstravels/test/submitForReview.test.js):
 
 ```js
 import cds from '@sap/cds'
@@ -83,6 +84,8 @@ The empty travel submits with `204` because there's no rule yet. The red test pr
 the real behaviour and pins the contract.
 
 ### The handler (write this to go green)
+
+The handler goes in [`srv/travel-service.js`](../../xstravels/srv/travel-service.js):
 
 ```js
 import cds from '@sap/cds'
