@@ -181,6 +181,23 @@ The app has no domain model yet; you'll create it in Exercise 1.
 
 👉 Stop the server with `Ctrl+C`.
 
+> [!TIP]
+> **Port 4004 still in use?** If a previous `cds watch` didn't shut down cleanly, the next start
+> fails with `EADDRINUSE … :4004`. Kill whatever holds the port:
+>
+> ```powershell
+> # Windows PowerShell
+> Get-NetTCPConnection -LocalPort 4004 | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+> ```
+>
+> ```bash
+> # macOS / Linux / Git Bash
+> lsof -ti tcp:4004 | xargs kill -9
+> ```
+>
+> Then run `cds watch` again. (Or just ask Claude Code *"kill whatever is running on port 4004"* —
+> the `cap-troubleshooting` skill handles it cross-platform.)
+
 ## Read the spec
 
 👉 Open [`xstravels/readme.md`](../../xstravels/readme.md) and skim the project spec: the
