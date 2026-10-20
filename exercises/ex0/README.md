@@ -147,6 +147,15 @@ other tooling, then reports what's installed, outdated, or missing.
 
 👉 Fix anything it flags before continuing.
 
+> [!TIP]
+> **Cut down the permission prompts.** By default Claude Code asks before each edit or command,
+> which gets tedious across a whole app build. Press **`Shift+Tab`** in the Claude Code prompt to
+> cycle the **permission mode** — one press gives you **accept edits** (`⏵⏵ accept edits on`), and
+> another, where available, gives you **auto mode** (`⏵⏵ auto mode on`) so it runs without stopping
+> to ask. In the VS Code extension you can also pick the mode from the indicator under the prompt
+> box (**Edit automatically** / **Auto**). You'll still see the diffs — keep reviewing what the AI
+> changes, which is the whole point of this session.
+
 ## Get the seed project ready
 
 This repository ships a **seed** CAP project at [`xstravels/`](../../xstravels) — a fresh
