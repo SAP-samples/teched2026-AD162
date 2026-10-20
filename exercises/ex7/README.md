@@ -5,8 +5,8 @@
 *"skiing in snowy mountains"* finds *"Alpine getaway"* even though they share no words.
 
 > [!NOTE]
-> This is a **pick-your-adventure** exercise — do it in any order. It builds on the domain model and
-> service from Exercises 1–2.
+> This exercise stands on its own — it builds only on the domain model and service from
+> Exercises 1–2 — so you can reach it directly if you're short on time.
 
 Classic search matches *characters*: "beach" finds rows containing "beach". **Vector embeddings**
 match *meaning*: text is turned into a numeric vector that captures semantics, so two phrases about
@@ -196,4 +196,4 @@ Key changes:
 
 ---
 
-[Back to the exercise list](../../README.md) · [Next exercise](../ex8/README.md)
+[Next exercise](../ex8/README.md)

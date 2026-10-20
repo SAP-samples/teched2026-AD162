@@ -142,4 +142,4 @@ Key change:
 
 ---
 
-[Back to the exercise list](../../README.md) · [Next exercise](../ex9/README.md)
+[Next exercise](../ex9/README.md)

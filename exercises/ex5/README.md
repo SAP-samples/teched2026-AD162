@@ -5,9 +5,10 @@ lookup — and build it the right way: **write the test first**, watch it fail, 
 minimal handler to make it pass.
 
 > [!NOTE]
-> This is the first of the **pick-your-adventure** exercises. From here on, each exercise is
-> independent — do them in any order. This one builds on the `submitForReview` action from
-> Exercise 4's "extend it yourself" step; if you skipped it, the prompt below adds it too.
+> From here on, each exercise stands on its own, so you *can* skip around if a topic grabs you —
+> but the exercises still read best in order, so the simplest path is to keep going. This one
+> builds on the `submitForReview` action from Exercise 4's "extend it yourself" step; if you
+> skipped it, the prompt below adds it too.
 
 In Exercises 3 and 4 you expressed every rule declaratively — and that's the goal. But some rules
 genuinely can't be an annotation: they need a DB lookup, an external call, or async work. *"A
@@ -151,4 +152,4 @@ Key files created / changed:
 
 ---
 
-[Back to the exercise list](../../README.md) · [Next exercise](../ex6/README.md)
+[Next exercise](../ex6/README.md)

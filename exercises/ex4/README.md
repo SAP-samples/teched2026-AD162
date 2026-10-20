@@ -116,7 +116,7 @@ The spec's lifecycle also mentions an **InReview** state (`P`).
 > Want a rule `@flow.status` *can't* express — say, *reject an empty travel from being submitted
 > for review*? That's the signal to add a small `before` handler. The AI writes the test first,
 > then the minimal handler, only where annotations genuinely fall short — the subject of the
-> custom-handlers exercise in the pick-your-adventure track.
+> next exercise.
 
 ## Summary
 
@@ -134,6 +134,9 @@ constraints, and a lifecycle — built by directing the AI, one reviewable stage
 
 ---
 
-From here, pick your path — custom handlers (test-first), the HCQL and AI protocols, exposing the
-app over **MCP** so you can drive it in natural language, authorization, and more. See the
-[main exercise list](../../README.md).
+From here the exercises build out the rest of the AD162 toolkit — custom handlers (test-first),
+the HCQL and AI protocols, exposing the app over **MCP** so you can drive it in natural language,
+and authorization. Each stands on its own, so if one topic grabs you, you can jump ahead via the
+[main exercise list](../../README.md) — but the recommended path is simply to keep going.
+
+[Next exercise](../ex5/README.md)

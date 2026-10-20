@@ -119,4 +119,4 @@ Key file created:
 
 ---
 
-[Back to the exercise list](../../README.md) · [Next exercise](../ex7/README.md)
+[Next exercise](../ex7/README.md)
