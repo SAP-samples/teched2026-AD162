@@ -27,6 +27,17 @@ costs, and where each travel is in its approval lifecycle.
 - Supporting reference data: **Customers**, **Travel Agencies**, **Flights**, and the
   **Travel status** code list.
 
+## Naming conventions
+
+Follow standard CAP/CDS casing when modeling these entities:
+
+- **Entities and types** use `PascalCase`, with entities named in the plural — `Travels`,
+  `Bookings`, `Customers`, `TravelAgencies`, `Flights`, `TravelStatus`.
+- **Elements (fields)** use lowercase `camelCase` — `beginDate`, `endDate`, `bookingFee`,
+  `totalPrice`, `flightPrice`, `bookingDate` — **not** `BeginDate` or `TotalPrice`. Element names
+  are case-sensitive and are used verbatim in OData, HCQL, JSON payloads, and CSV headers.
+- **Namespace** is lowercase and dotted, e.g. `sap.capire.travels`.
+
 ## Lifecycle (status flow)
 
 A travel moves through a small state machine: **Open → InReview → Accepted / Rejected**,
