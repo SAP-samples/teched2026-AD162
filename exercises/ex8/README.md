@@ -1,9 +1,8 @@
-# Exercise 8 — Expose the app over MCP
+# Exercise 8 — Expose the app over MCP and add an agent
 
-**Goal:** turn the app you built into an **MCP server**, then **talk to it in natural language from
-Claude Code** — "list all open travels with their agency and total price" — and watch the agent
-query your own service. This is the climax of the session: the thing you built becomes a tool the
-AI can use.
+**Goal:** turn the app you built into an **MCP server**, talk to it in natural language from
+**Claude Code**, then add a **CAP-level agent** with its own browser chat. This is the climax of
+the session: the thing you built becomes a tool the AI can use and hosts an agent of its own.
 
 The [Model Context Protocol](https://modelcontextprotocol.io/) lets AI agents discover and call
 tools. From a CAP developer's view, `@mcp` is just another protocol — like `@odata` or `@hcql`. Add
@@ -130,14 +129,63 @@ rows back in the compact TOON format — fully deterministic.
 > `Travels`, so as built the Inspector lists just `describe` and `query`. Add an unbound action (per
 > the limitation note above) and `call_action` shows up.
 
+## Add a CAP-level agent
+
+So far **Claude Code hosts the agent** and your app supplies MCP tools. With
+[`@cap-js/agents`](https://cap.cloud.sap/docs/guides/ai/cap-agents), the **CAP app hosts its own
+agent**, served over the Agent-to-Agent (**A2A**) protocol. Let's add a small chat over the same
+travel data.
+
+👉 In Claude Code, ask:
+
+```text
+Add a CAP-level agent to TravelService using @cap-js/agents and @agent.
+Keep OData, HCQL, MCP, and the existing MCP instructions in travel-protocols.cds.
+Use the plugin's built-in agent and tools to answer travel questions. Check the CAP docs
+for local LLM configuration and use the existing Claude Code setup where supported.
+```
+
+### What good looks like
+
+The skill installs the plugin with `npm add @cap-js/agents` and extends the **existing** protocol
+annotation in [`srv/travel-protocols.cds`](../../xstravels/srv/travel-protocols.cds):
+
+```cds
+using { TravelService } from './travel-service';
+
+annotate TravelService with @odata @hcql @mcp @agent
+  @mcp.instructions: 'This service manages travel bookings. Use describe to explore entities like Travels, Bookings, Customers, and Flights. Use query to search travels by status, date range, or agency.';
+```
+
+The plugin supplies the agent loop and service tools — no custom agent handler needed. In local
+Node.js development it can pick up a supported Claude Code LLM configuration automatically; if
+that is unavailable, follow the [LLM configuration guide](https://cap.cloud.sap/docs/guides/ai/cap-agents#configuration).
+
+👉 Review the diff, restart `cds watch`, and open the **Preview** link beside the new A2A endpoint
+on <http://localhost:4004> — normally <http://localhost:4004/a2a/travel/preview/>.
+
+👉 In that browser chat, ask:
+
+```text
+List the open travels with their agency and total price, then summarize which is most expensive.
+```
+
+Check that the answer matches your sample data and watch the server log for the agent's service
+tool calls. The request now goes to the **app's agent**, rather than Claude Code's agent.
+
+> [!TIP]
+> **Go deeper in sibling hands-on AD-262.** [Exercise 5 — Add Agent with Skills](https://github.com/SAP-samples/teched2026-AD262/tree/main/exercises/ex5)
+> builds an invoice-matching agent with domain policies and human-in-the-loop approval. This small
+> travel chat is the starting point; AD-262 explores the richer workflow.
+
 ## Summary
 
-You exposed xstravels over MCP with a one-line annotation and drove it in natural language from
-Claude Code — closing the loop from *building* the app with AI to *operating* it with AI.
+You exposed xstravels over MCP and drove it from Claude Code, then added a CAP-level agent with
+its own browser chat — closing the loop from *building* the app with AI to *operating* it with AI.
 
 Key change:
 
-- `@cap-js/mcp` added; `@mcp` + `@mcp.instructions` on
+- `@cap-js/mcp` and `@cap-js/agents` added; `@mcp`, `@mcp.instructions`, and `@agent` on
   [`srv/travel-protocols.cds`](../../xstravels/srv/travel-protocols.cds)
 
 ---

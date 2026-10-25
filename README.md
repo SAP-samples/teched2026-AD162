@@ -11,7 +11,7 @@ This session introduces attendees to try out new CAP features yourself! Start wi
 - Status Transition Flows
 - HCQL, CAP's native query-over-HTTP protocol
 - Semantic search with vector embeddings
-- Exposing your app over MCP and driving it in natural language
+- Exposing your app over MCP and adding a CAP-level agent
 - and more
 
 ## Requirements
@@ -42,7 +42,7 @@ This session introduces attendees to try out new CAP features yourself! Start wi
 - [Exercise 5 — Custom handlers, test-first](exercises/ex5/README.md)
 - [Exercise 6 — HCQL: CQL over HTTP](exercises/ex6/README.md)
 - [Exercise 7 — Semantic search with vector embeddings](exercises/ex7/README.md)
-- [Exercise 8 — Expose the app over MCP](exercises/ex8/README.md)
+- [Exercise 8 — Expose the app over MCP and add an agent](exercises/ex8/README.md)
 - [Exercise 9 — Authorization](exercises/ex9/README.md)
 
 ## Start the exercises
