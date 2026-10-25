@@ -46,6 +46,11 @@ else is context to read.
 https://github.com/SAP-samples/teched2026-AD162.git
 ```
 
+👉 When VS Code opens the project, a notification appears asking *"Do you want to install the
+recommended extensions from Microsoft, mechatroner and others for this repository?"* — click
+**Install**. This repository recommends a handful of extensions (CDS language support, ESLint, a
+CSV viewer, and a SQLite viewer) that make the following exercises smoother.
+
 👉 Open a terminal in VS Code (**Terminal > New Terminal**).
 
 ## Install the latest CAP development kit
