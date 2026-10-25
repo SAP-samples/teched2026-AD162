@@ -26,7 +26,7 @@ else is context to read.
 | Component | Version |
 |---|---|
 | Node.js | 24.x (LTS) |
-| `@sap/cds-dk` (global CLI) | 10.1 |
+| `@sap/cds-dk` (global CLI) | 10.2 |
 | `@sap/cds` (runtime) | ^10 |
 | `@cap-js/sqlite` | ^3 |
 | `@cap-js/cds-test` | ^1 |
@@ -68,7 +68,7 @@ cds --version
 ```
 
 > [!IMPORTANT]
-> **Use the latest `@sap/cds-dk`.** The guided-dev flow relies on current CLI features (e.g.
+> **Use the latest `@sap/cds-dk` (10.2 or later).** The guided-dev flow relies on current CLI features (e.g.
 > `cds add data --keys-only`). An outdated kit generates stale project layouts and misses flags,
 > which quietly derails later stages.
 

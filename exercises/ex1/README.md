@@ -98,30 +98,29 @@ content. The command is:
 cds add data --records 5 --keys-only
 ```
 
-This writes one CSV per entity under `db/data/`, pre-filling the **primary-key** columns with
-generated UUIDs and leaving every other column — including association **foreign keys** — empty for
-the AI to complete.
+With **CDS DK 10.2 or later**, this writes CSVs under `db/data/`, generating UUID primary keys
+and populating managed association **foreign keys**, including composition backlinks such as
+`Bookings.travel_ID`. The remaining content columns are left empty for the AI to complete.
 
 > [!IMPORTANT]
-> **`--keys-only` only works together with `--records`.** Run `cds add data --keys-only` on its own
-> and the CLI prints `ignoring --keys-only, use --records to create entries` and writes
-> **header-only** files (no rows at all). Always pass `--records <n>` as well.
+> **`--keys-only` requires `--records` to generate sample rows.** Without `--records`, the option
+> is ignored and ordinary entities get **header-only** files. DK 10.2 still generates enum code-list
+> rows in this mode. Always pass `--records <n>` for the sample data.
 
 👉 After the AI has generated **and filled** `db/data/`, open a couple of the CSVs and sanity-check
 them.
 
 > [!NOTE]
-> **What the CLI fills vs. what the AI fills.** The CLI generates the primary keys (the `ID`
-> columns). It does **not** populate association foreign keys (e.g. `agency_ID`, `customer_ID`,
-> `travel_ID`) or any content — those are left empty. The AI fills the descriptive columns *and*
-> wires the foreign keys so travels point at real agencies/customers and bookings point at their
-> travel. Keep the generated primary-key UUIDs stable, and make every foreign key reference an `ID`
-> that actually exists in the related file.
+> **Keep the generated relationships; fill the content.** Preserve the CSV headers, UUID primary
+> keys, and valid foreign keys (e.g. `agency_ID`, `customer_ID`, `travel_ID`). The AI fills names,
+> descriptions, dates, amounts, and other domain content. Check each reference against its target
+> file; repair missing or invalid references by copying existing target keys. Generated
+> relationships do not guarantee valid business data, so also check dates, currencies, and totals.
 
-> [!WARNING]
-> **Code-list codes are domain values.** In `sap.capire.travels-TravelStatus.csv` the codes must be
-> the real lifecycle codes (`O`, `P`, `B`, `A`, `X`) — not placeholder values. Make sure the AI set
-> them (and the matching `.texts` rows) correctly.
+> [!NOTE]
+> **Enum code lists are generated completely.** DK 10.2 emits every `TravelStatus` enum code
+> (`O`, `P`, `B`, `A`, `X`) regardless of `--records`, with matching localized `.texts` keys.
+> Verify these rows and preserve their codes when filling names and descriptions.
 
 ## Verify it
 
