@@ -118,14 +118,13 @@ Both the MCP server and the skills are picked up when Claude Code starts.
 
 👉 **Restart Claude Code** now that you've installed both, so it loads them.
 
-👉 **Verify the skills** — list the installed plugins in Claude Code:
+👉 **Verify the skills** — list the installed skills in Claude Code:
 
 ```text
-/plugin
+/cap
 ```
 
-You should see the `cap-developer` plugin from the `cap` marketplace, exposing `cap-guided-dev`,
-`cap-developer`, `cap-check-setup`, `cap-inner-loop`, `cap-hcql`, `cap-troubleshooting`, and more.
+You should see the `cap-guided-dev`, `cap-developer`, `cap-check-setup`, `cap-inner-loop`, `cap-hcql`, `cap-troubleshooting`, and more.
 
 👉 **Verify the CAP MCP docs server** — ask Claude Code a CAP documentation question:
 
