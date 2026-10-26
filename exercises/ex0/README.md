@@ -111,11 +111,6 @@ This gives Claude Code the CAP skill library, including:
 - Specialists such as **`cap-check-setup`**, **`cap-inner-loop`**, **`cap-hcql`**, and
   **`cap-troubleshooting`** that other exercises use.
 
-> [!WARNING]
-> If a skill isn't found, confirm the marketplace was added **with the `#teched2026-ad162` branch**
-> and the `cap-developer` plugin installed. The full skill set (including `cap-guided-dev`) lives
-> on that frozen session branch, not on `main` — ask a facilitator if the plugin install reports a
-> problem.
 
 ## Restart Claude Code and verify your setup
 
