@@ -75,7 +75,8 @@ curl -s -u alice: "http://localhost:4004/odata/v4/travel/Travels?\$select=descri
 ```
 
 > [!TIP]
-> **On Windows / prefer not to use a shell?** Open [`requests.http`](requests.http) and click
+> **On Windows / prefer not to use a shell?** In `xstravels`, open
+> [`requests/ex2.http`](../../xstravels/requests/ex2.http) and click
 > **Send Request** above any request — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension (already recommended for this project) runs it with no `curl` and no shell quirks.
 

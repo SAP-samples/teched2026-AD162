@@ -1,8 +1,7 @@
 # Exercise 3 — Declarative constraints
 
 **Goal:** make the service enforce the spec's **hard rules** — required fields, cross-field
-checks, referential checks, even a "no overlapping travels" uniqueness rule — **declaratively**,
-with no handler code.
+checks, and referential checks — **declaratively**, with no handler code.
 
 The spec listed the rules the system must guarantee on every write. The instinct is to write
 JavaScript validation handlers. CAP's answer is better: express most rules as **annotations** on
@@ -27,8 +26,7 @@ Continue to the constraints stage. Enforce the hard rules from the spec — decl
   the CAP docs (the `cap` MCP tools) rather than guessing.
 - Create [`srv/travel-constraints.cds`](../../xstravels/srv/travel-constraints.cds) mapping rules
   to annotations: `@mandatory` for required references; `@assert: (case when … end)` for field,
-  cross-field, referential, booking-period, and currency-match rules; and a **uniqueness** rule
-  using an `exists` predicate over a self-association.
+  cross-field, referential, booking-period, and currency-match rules.
 - Put user-facing messages in [`_i18n/messages.properties`](../../xstravels/_i18n/messages.properties)
   as plain keys.
 
@@ -38,13 +36,6 @@ Continue to the constraints stage. Enforce the hard rules from the spec — decl
 
 ```cds
 using { TravelService } from './travel-service';
-using { sap.capire.travels as my } from '../db/schema';
-
-// Helper to reach all OTHER travel rows from within the overlap constraint.
-// Added on the DB entity so the service projection inherits it.
-extend my.Travels with {
-  others : Association to many my.Travels on 1 = 1;
-}
 
 annotate TravelService.Travels with {
 
@@ -64,13 +55,6 @@ annotate TravelService.Travels with {
   beginDate @mandatory @assert: (case
     when endDate < beginDate then 'ASSERT_BEGINDATE_BEFORE_ENDDATE'
     when exists bookings[flight.date < $self.beginDate] then 'ASSERT_BOOKING_IN_TRAVEL_PERIOD'
-    // no second travel of the same customer may overlap this one
-    when exists others[
-         customer.ID = $self.customer.ID
-         and ID != $self.ID
-         and beginDate <= $self.endDate
-         and endDate   >= $self.beginDate
-       ] then 'ASSERT_NO_OVERLAPPING_TRAVELS'
   end);
 
   endDate @mandatory @assert: (case
@@ -108,7 +92,6 @@ ASSERT_AGENCY_UNKNOWN = The selected travel agency does not exist.
 ASSERT_CUSTOMER_UNKNOWN = The selected customer does not exist.
 ASSERT_BEGINDATE_BEFORE_ENDDATE = The begin date must not be after the end date.
 ASSERT_ENDDATE_AFTER_BEGINDATE = The end date must not be before the begin date.
-ASSERT_NO_OVERLAPPING_TRAVELS = This customer already has a travel that overlaps this period.
 ASSERT_BOOKING_FEE_NON_NEGATIVE = The booking fee must not be negative.
 ASSERT_FLIGHT_PRICE_NON_NEGATIVE = The flight price must not be negative.
 ASSERT_BOOKING_IN_TRAVEL_PERIOD = The flight date must fall within the travel period.
@@ -124,12 +107,9 @@ ASSERT_NO_BOOKINGS_AFTER_TRAVEL = A booking date must not be after the travel en
 > also surface as the error `code`.
 
 > [!WARNING]
-> **Two things that are easy to get subtly wrong** — have the AI verify both against the CAP docs:
-> - The uniqueness **`others` helper must `extend` the DB entity** (`my.Travels`), not the service
->   projection — CDS can't add elements to a projection that way, and will error.
-> - The **booking-in-period check is expressed from the Travel** via
->   `exists bookings[flight.date …]`, not as an annotation on the Booking's `flight.date` (which
->   isn't a foreign key and would only produce a warning).
+> **Express the booking-in-period check from the Travel** via `exists bookings[flight.date …]`.
+> An annotation on the Booking's `flight.date` isn't a foreign-key annotation and would only
+> produce a warning. Have the AI verify the placement against the CAP docs.
 
 ## Verify it
 
@@ -143,7 +123,8 @@ curl -s -u alice: -X POST "http://localhost:4004/odata/v4/travel/Travels" \
 ```
 
 > [!TIP]
-> **Skip the shell and the ID hunting.** Open [`requests.http`](requests.http) and click
+> **Skip the shell and the ID hunting.** In `xstravels`, open
+> [`requests/ex3.http`](../../xstravels/requests/ex3.http) and click
 > **Send Request** top to bottom — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension grabs a real agency and customer ID from the first two requests and fills them into
 > the create bodies automatically, so there are no UUIDs to copy and it adapts to this run's data.
@@ -178,7 +159,7 @@ example, *"a travel's booking fee may not exceed 100"*. Watch it reach for `@ass
 ## Summary
 
 You turned the spec's hard rules into a declarative validation layer — required fields,
-cross-field and cross-entity checks, and a uniqueness rule — with zero handler code, verified live.
+cross-field and cross-entity checks — with zero handler code, verified live.
 
 Key files created:
 

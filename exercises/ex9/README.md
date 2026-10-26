@@ -66,7 +66,8 @@ curl -s -o /dev/null -w "anon: HTTP %{http_code}\n" \
 ```
 
 > [!TIP]
-> **Prefer clicks to shell?** Open [`requests.http`](requests.http) and **Send Request** top to
+> **Prefer clicks to shell?** In `xstravels`, open
+> [`requests/ex9.http`](../../xstravels/requests/ex9.http) and click **Send Request** top to
 > bottom — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension runs each role (anonymous, `viewer`, `rachel`, `alice`) and reuses a real InReview
 > travel ID for the accept calls, so there's no `<an-InReview-travel-ID>` to paste.
