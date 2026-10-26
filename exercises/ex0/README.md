@@ -51,7 +51,8 @@ recommended extensions from Microsoft, mechatroner and others for this repositor
 **Install**. This repository recommends a handful of extensions (CDS language support, ESLint, a
 CSV viewer, and a SQLite viewer) that make the following exercises smoother.
 
-👉 Open a terminal in VS Code (**Terminal > New Terminal**).
+👉 In the VS Code Explorer, right-click the **`xstravels`** folder and choose **Open in Integrated
+Terminal**. Run the following terminal commands from this folder.
 
 ## Install the latest CAP development kit
 
@@ -89,6 +90,17 @@ claude mcp add cds-mcp -- npx -y @cap-js/mcp-server
 > [!NOTE]
 > The first run downloads a small embedding model, so allow a moment and a network connection.
 
+## Open Claude Code in the app folder
+
+👉 In the same `xstravels` terminal, start Claude Code:
+
+```bash
+claude
+```
+
+Claude Code now works from the app folder, where it can find `readme.md`, `package.json`, and the
+model files you'll create. Enter the following slash commands in the Claude Code prompt.
+
 ## Install the CAP skills into Claude Code
 
 The CAP skills are published as a plugin marketplace at
@@ -116,7 +128,8 @@ This gives Claude Code the CAP skill library, including:
 
 Both the MCP server and the skills are picked up when Claude Code starts.
 
-👉 **Restart Claude Code** now that you've installed both, so it loads them.
+👉 **Restart Claude Code** now that you've installed both, so it loads them. Exit with `/exit`,
+then run `claude` again in the same `xstravels` terminal.
 
 👉 **Verify the skills** — list the installed skills in Claude Code:
 
@@ -162,10 +175,10 @@ This repository ships a **seed** CAP project at [`xstravels/`](../../xstravels) 
 **project spec** (the agreed problem statement). This is your starting point: an empty app and a
 clear idea. You'll build everything else *with the AI* in the following exercises.
 
-👉 Install its dependencies:
+👉 Open another terminal in `xstravels` (right-click the folder and choose **Open in Integrated
+Terminal**) and install its dependencies:
 
 ```bash
-cd xstravels
 npm install
 ```
 

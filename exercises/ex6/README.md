@@ -56,7 +56,8 @@ curl -s -u alice: "http://localhost:4004/hcql/travel" \
 ```
 
 > [!TIP]
-> **On Windows / prefer not to use a shell?** Open [`requests.http`](requests.http) and click
+> **On Windows / prefer not to use a shell?** In `xstravels`, open
+> [`requests/ex6.http`](../../xstravels/requests/ex6.http) and click
 > **Send Request** above any query — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension posts the CQL body for you, no shell quoting needed.
 

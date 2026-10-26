@@ -58,7 +58,6 @@ declarative constraints in a later stage — prefer annotations over handlers):
 6. **Booking fee** and **flight price** must not be negative.
 7. A **booking's currency must match its travel's currency.**
 8. A **booking date must not be after the travel's end date.**
-9. *(reached later)* A customer must not have **two overlapping travels** at the same time.
 
 ## Where this goes next
 
@@ -77,6 +76,7 @@ File or Folder | Purpose
 `app/` | content for UI frontends goes here
 `db/` | your domain models and data go here
 `srv/` | your service models and code go here
+`requests/` | per-exercise HTTP requests — open `ex2.http`, `ex3.http`, etc. with VS Code REST Client
 `readme.md` | this project spec
 
 ## Learn more

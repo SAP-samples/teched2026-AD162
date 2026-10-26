@@ -127,7 +127,8 @@ curl -s -u alice: "http://localhost:4004/odata/v4/travel/searchTravels(q='skiing
 ```
 
 > [!TIP]
-> **On Windows / prefer not to use a shell?** Open [`requests.http`](requests.http) and click
+> **On Windows / prefer not to use a shell?** In `xstravels`, open
+> [`requests/ex7.http`](../../xstravels/requests/ex7.http) and click
 > **Send Request** above either search — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension runs it with no `curl` and no shell quirks.
 

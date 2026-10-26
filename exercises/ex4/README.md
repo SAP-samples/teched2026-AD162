@@ -76,7 +76,8 @@ curl -s -o /dev/null -w "HTTP %{http_code}\n" -u alice: -X POST \
 ```
 
 > [!TIP]
-> **No shell, no UUID hunting.** Open [`requests.http`](requests.http) and click **Send Request**
+> **No shell, no UUID hunting.** In `xstravels`, open
+> [`requests/ex4.http`](../../xstravels/requests/ex4.http) and click **Send Request**
 > top to bottom — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension finds an Open travel in request 1 and reuses its ID for accept/verify/reopen, so
 > `<open-travel-ID>` is resolved for you and the flow works against whatever data this run created.

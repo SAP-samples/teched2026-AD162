@@ -11,7 +11,10 @@ model**.
 
 ## Start the guided flow
 
-👉 Open Claude Code in the `xstravels` folder and start the flow:
+👉 If Claude Code isn't already running, right-click **`xstravels`** in the VS Code Explorer,
+choose **Open in Integrated Terminal**, and run `claude`.
+
+👉 In Claude Code, start the flow:
 
 ```text
 Let's build this CAP app with the cap-guided-dev skill. The project spec is in readme.md.

@@ -1,0 +1,75 @@
+### Exercise 5 — Custom handlers, test-first
+#
+# Run these with the VS Code REST Client extension (humao.rest-client, already recommended
+# for this project): click "Send Request" above each request, top to bottom.
+#
+# These requests CHAIN: look up real reference data, create an empty travel, check rejection,
+# add a booking, then submit successfully. No hardcoded UUIDs or dates — the travel uses the
+# selected flight's date and currency so the booking fits its period and currency rules.
+#
+# `cds watch` must be running, with the submitForReview action and handler from Exercise 5.
+
+@host = http://localhost:4004
+@auth = alice:
+
+### 1) Grab a real agency ID — SEND FIRST
+# @name agency
+GET {{host}}/odata/v4/travel/TravelAgencies?$select=ID,name&$top=1
+Authorization: Basic {{auth}}
+
+### 2) Grab a real customer ID
+# @name customer
+GET {{host}}/odata/v4/travel/Customers?$select=ID&$top=1
+Authorization: Basic {{auth}}
+
+### 3) Pick a flight and use its date, price, and currency below
+# @name flight
+GET {{host}}/odata/v4/travel/Flights?$select=ID,date,price,currency_code&$top=1
+Authorization: Basic {{auth}}
+
+### 4) Create an empty travel — expect HTTP 201 Created
+# @name emptyTravel
+POST {{host}}/odata/v4/travel/Travels
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{
+  "description": "Review check",
+  "beginDate": "{{flight.response.body.$.value[0].date}}",
+  "endDate": "{{flight.response.body.$.value[0].date}}",
+  "bookingFee": "0.00",
+  "currency_code": "{{flight.response.body.$.value[0].currency_code}}",
+  "agency_ID": "{{agency.response.body.$.value[0].ID}}",
+  "customer_ID": "{{customer.response.body.$.value[0].ID}}"
+}
+
+### 5) Submit without bookings — expect HTTP 400 and the "at least one booking" message
+POST {{host}}/odata/v4/travel/Travels({{emptyTravel.response.body.$.ID}})/TravelService.submitForReview
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{}
+
+### 6) Add a booking that matches the travel's date and currency — expect HTTP 201 Created
+POST {{host}}/odata/v4/travel/Bookings
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{
+  "travel_ID": "{{emptyTravel.response.body.$.ID}}",
+  "flight_ID": "{{flight.response.body.$.value[0].ID}}",
+  "flightPrice": "{{flight.response.body.$.value[0].price}}",
+  "currency_code": "{{flight.response.body.$.value[0].currency_code}}",
+  "bookingDate": "{{flight.response.body.$.value[0].date}}"
+}
+
+### 7) Submit the same travel again — expect HTTP 204 No Content
+POST {{host}}/odata/v4/travel/Travels({{emptyTravel.response.body.$.ID}})/TravelService.submitForReview
+Authorization: Basic {{auth}}
+Content-Type: application/json
+
+{}
+
+### 8) Confirm the status moved to InReview (expect "status_code":"P")
+GET {{host}}/odata/v4/travel/Travels({{emptyTravel.response.body.$.ID}})?$select=description,status_code
+Authorization: Basic {{auth}}

@@ -129,6 +129,12 @@ npm test
 `submitForReview` — you get a **400** with your message. Add a booking, submit again — it succeeds
 and the status moves to `InReview`.
 
+> [!TIP]
+> **Run the live check from the app folder.** In `xstravels`, open
+> [`requests/ex5.http`](../../xstravels/requests/ex5.http) and click **Send Request** top to bottom.
+> It looks up real agency, customer, and flight data, creates an empty travel, checks the rejection,
+> then adds a matching booking and verifies successful submission and the new status.
+
 > [!NOTE]
 > **A booking added via a direct `POST /Bookings` isn't re-checked against the parent's period
 > rule.** The booking-in-travel-period constraint from Exercise 3 lives on `Travels` (`exists
