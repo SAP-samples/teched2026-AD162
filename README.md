@@ -24,7 +24,7 @@ This session introduces attendees to try out new CAP features yourself! Start wi
 | Component | Version |
 |---|---|
 | Node.js | 24.x (LTS) |
-| `@sap/cds-dk` (global CLI) | 10.1 |
+| `@sap/cds-dk` (global CLI) | 10.2 |
 | `@sap/cds` (runtime) | ^10 |
 | `@cap-js/sqlite` | ^3 |
 | `@cap-js/cds-test` | ^1 |
