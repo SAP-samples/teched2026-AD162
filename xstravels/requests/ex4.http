@@ -10,7 +10,11 @@
 # first response automatically (REST Client "request variables"), so nothing is hardcoded —
 # it adapts to whatever sample data this run generated.
 #
-# `cds watch` must be running in a terminal first.
+# `cds watch` must be running with Exercise 4's basic Open -> Accepted flow.
+# Run this before the optional InReview extension. Once acceptTravel requires InReview,
+# use ex5.http to submit for review and ex9.http to check acceptance instead.
+# The lookup needs an Open travel. If it returns an empty value array, use the lookup and
+# valid-create requests in ex3.http to create one, then send this file top to bottom.
 
 @host = http://localhost:4004
 @auth = alice:
@@ -31,7 +35,7 @@ Content-Type: application/json
 GET {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})?$select=description,status_code
 Authorization: Basic {{auth}}
 
-### 4) Illegal transition — accept the same travel again (no longer Open)
+### 4) Illegal transition — accept the same travel again (no longer Open), expect HTTP 409
 # CAP rejects it: code "INVALID_FLOW_TRANSITION_SINGLE".
 POST {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})/TravelService.acceptTravel
 Authorization: Basic {{auth}}
@@ -39,9 +43,13 @@ Content-Type: application/json
 
 {}
 
-### 5) Reopen the travel — back to Open, so acceptTravel works again
+### 5) Reopen the travel — expect HTTP 204, back to Open
 POST {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})/TravelService.reopenTravel
 Authorization: Basic {{auth}}
 Content-Type: application/json
 
 {}
+
+### 6) Confirm the status is Open again (expect "status_code":"O")
+GET {{host}}/odata/v4/travel/Travels({{openTravel.response.body.$.value[0].ID}})?$select=description,status_code
+Authorization: Basic {{auth}}

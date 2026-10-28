@@ -69,12 +69,13 @@ curl -s -u alice: "http://localhost:4004/hcql/travel" \
 ]}
 ```
 
-👉 Now the thing OData makes verbose — a **deep read with an expand** — in one natural query:
+👉 Now the thing OData makes verbose — a **deep read with an expand** — in one natural query.
+Select travels that have bookings so the expanded arrays contain data:
 
 ```bash
 curl -s -u alice: "http://localhost:4004/hcql/travel" \
   -H "Content-Type: text/plain" \
-  --data 'SELECT from Travels { ID, description, bookings { pos, flightPrice, currency.code as currency } } limit 2'
+  --data 'SELECT from Travels { ID, description, bookings { pos, flightPrice, currency.code as currency } } where exists bookings limit 2'
 ```
 
 ```json

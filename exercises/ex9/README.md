@@ -71,6 +71,8 @@ curl -s -o /dev/null -w "anon: HTTP %{http_code}\n" \
 > bottom — the [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 > extension runs each role (anonymous, `viewer`, `rachel`, `alice`) and reuses a real InReview
 > travel ID for the accept calls, so there's no `<an-InReview-travel-ID>` to paste.
+> Set `@acceptFrom = O` in the file if you kept Exercise 4's basic flow; the default `P` is for
+> its optional InReview extension. The selected state must match `acceptTravel`'s `@from`.
 
 👉 An authenticated user **without** the reviewer role can read but not accept:
 
