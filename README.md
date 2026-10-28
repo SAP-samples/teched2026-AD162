@@ -1,5 +1,7 @@
 # Session AD162 - Everything new - Try out the latest and greatest CAP features
 
+[![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/teched2026-AD162)](https://api.reuse.software/info/github.com/SAP-samples/teched2026-AD162)
+
 ## Description
 
 This repository contains the material for the SAP TechEd 2026 session called AD162 - Everything new - Try out the latest and greatest CAP features.  
