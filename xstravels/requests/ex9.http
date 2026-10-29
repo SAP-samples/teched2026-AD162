@@ -6,12 +6,17 @@
 #
 # The response pane shows the HTTP status line at the top — that's what each step checks.
 #
-# The action requests CHAIN off request 3: send request 3 first to pick a real InReview
-# travel, then the viewer/reviewer requests reuse its ID automatically — no hardcoded UUIDs.
+# The action requests CHAIN off request 3: send top to bottom to pick an eligible travel,
+# then the viewer/reviewer requests reuse its ID automatically — no hardcoded UUIDs.
 #
-# `cds watch` must be running in a terminal first.
+# `cds watch` must be running with Exercise 9's @restrict rules and mocked users.
+# Match @acceptFrom to acceptTravel's @from annotation: P for the optional InReview flow
+# from Exercise 4, or O if you kept the basic Open -> Accepted flow.
+# If request 3 returns an empty value array, create an Open travel using ex3.http. For the
+# InReview flow, run ex5.http to create and submit a travel with a booking before retrying.
 
 @host = http://localhost:4004
+@acceptFrom = P
 
 ### 1) Anonymous read — rejected (expect HTTP 401)
 # No Authorization header = anonymous.
@@ -21,21 +26,21 @@ GET {{host}}/odata/v4/travel/Travels?$top=1
 GET {{host}}/odata/v4/travel/Travels?$top=1
 Authorization: Basic viewer:
 
-### 3) Find an InReview travel (status_code `P`) to act on — SEND BEFORE 4 & 5
+### 3) Find a travel in the configured acceptance state — SEND BEFORE 4 & 5
 # alice (admin) is used just to look it up.
-# @name inReview
-GET {{host}}/odata/v4/travel/Travels?$select=ID,description,status_code&$filter=status_code eq 'P'&$top=1
+# @name eligibleTravel
+GET {{host}}/odata/v4/travel/Travels?$select=ID,description,status_code&$filter=status_code eq '{{acceptFrom}}'&$top=1
 Authorization: Basic alice:
 
 ### 4) viewer cannot accept (expect HTTP 403)
-POST {{host}}/odata/v4/travel/Travels({{inReview.response.body.$.value[0].ID}})/TravelService.acceptTravel
+POST {{host}}/odata/v4/travel/Travels({{eligibleTravel.response.body.$.value[0].ID}})/TravelService.acceptTravel
 Authorization: Basic viewer:
 Content-Type: application/json
 
 {}
 
 ### 5) rachel (reviewer) CAN accept (expect HTTP 204)
-POST {{host}}/odata/v4/travel/Travels({{inReview.response.body.$.value[0].ID}})/TravelService.acceptTravel
+POST {{host}}/odata/v4/travel/Travels({{eligibleTravel.response.body.$.value[0].ID}})/TravelService.acceptTravel
 Authorization: Basic rachel:
 Content-Type: application/json
 
@@ -43,4 +48,8 @@ Content-Type: application/json
 
 ### 6) alice (admin) can do everything (expect HTTP 200)
 GET {{host}}/odata/v4/travel/Travels?$top=1
+Authorization: Basic alice:
+
+### 7) Confirm the reviewer persisted Accepted (expect "status_code":"A")
+GET {{host}}/odata/v4/travel/Travels({{eligibleTravel.response.body.$.value[0].ID}})?$select=description,status_code
 Authorization: Basic alice:

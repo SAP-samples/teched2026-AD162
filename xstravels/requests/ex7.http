@@ -4,15 +4,17 @@
 # for this project): click "Send Request" above any request below. No shell needed — works
 # the same on Windows, macOS, and Linux.
 #
-# `cds watch` must be running in a terminal first.
+# `cds watch` must be running with the local embedding setup, searchTravels function, and
+# handler from Exercise 7. First startup may wait for the embedding model download.
+# Results and scores depend on your sample descriptions — compare the rankings for each query.
 
 @host = http://localhost:4004
 @auth = alice:
 
-### Search by meaning — mountains & skiing (top hit shares no words with the query)
+### Search by meaning — mountains & skiing
 GET {{host}}/odata/v4/travel/searchTravels(q='skiing in snowy mountains')
 Authorization: Basic {{auth}}
 
-### A work-trip query — the conference and business travel rise to the top
+### Compare with a work-trip query
 GET {{host}}/odata/v4/travel/searchTravels(q='corporate work conference meeting')
 Authorization: Basic {{auth}}
